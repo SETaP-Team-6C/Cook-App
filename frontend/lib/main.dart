@@ -48,11 +48,21 @@ class _MyHomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Container(
+              height: 100,
+              width: 100,
+              child: CarouselView(
+                itemExtent: 3,
+                children: <Widget>[
+                  Text('Recipes'),
+                  Text('Profile'),
+                  Text('Pantry'),
+                ],
+              ),
             ),
+            Text('Recipes'),
+            Text('Profile'),
+            Text('Pantry'),
           ],
         ),
       ),
