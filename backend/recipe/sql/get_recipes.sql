@@ -1,0 +1,1 @@
+SELECT recipe_id, recipe_title FROM recipe;

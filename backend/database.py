@@ -16,6 +16,12 @@ class Database:
                 sql = schema.read()
                 cur.executescript(sql)
 
+            with open(self.get_database_test_data().absolute()) as test_data:
+                sql = test_data.read()
+                cur.executescript(sql)
+
+
+
     def get_connection(self) -> Connection:
         return connect(self.get_database_path())
 
@@ -26,3 +32,7 @@ class Database:
     @staticmethod
     def get_database_schema() -> Path:
         return Path('../database/schema.sql')
+
+    @staticmethod
+    def get_database_test_data() -> Path:
+        return Path('../database/test_data.sql')
