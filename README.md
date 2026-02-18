@@ -25,3 +25,26 @@ A mobile app that teaches people how to cook.
         - Linux: ```python3 -m flask --app app run```
    - You should see the server run in the terminal
    - Access by using a web browser and going to ```localhost:5000```
+
+
+## Backend Structure
+
+\- Backend
+
+&nbsp;&nbsp;\-\-  \_\_init__.py (Tells python that this directory is a package)
+
+&nbsp;&nbsp;\-\-  app.py (Entry Point)
+
+&nbsp;&nbsp;\-\-  database.py (Gives you a database connection object, also creates a database.db file if it does not exist)
+
+&nbsp;&nbsp;\-\-  requirements.txt (Python Dependencies)
+
+&nbsp;&nbsp;\-\- recipe\
+
+&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\\_\_init__.py (Tell python that this directory is a package)
+
+&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\routes.py (All the API endpoints for recipe related uses eg. get-recipe, search-recipe)
+
+&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\sql\ (Contains the sql queries for recipe)
+
+
