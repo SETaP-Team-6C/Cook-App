@@ -31,7 +31,7 @@ A mobile app that teaches people how to cook.
 
 * [backend](./backend)
 
-   * [__init__.py](./backend/__init__.py) (Tells python that this directory is a package)
+   * [\_\_init__.py](./backend/__init__.py) (Tells python that this directory is a package)
 
    * [app.py](./backend/app.py) (Entry Point)
 
