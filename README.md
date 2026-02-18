@@ -29,22 +29,22 @@ A mobile app that teaches people how to cook.
 
 ## Backend Structure
 
-\- Backend
+* [backend](./backend)
 
-&nbsp;&nbsp;\-\-  \_\_init__.py (Tells python that this directory is a package)
+   * [__init__.py](./backend/__init__.py) (Tells python that this directory is a package)
 
-&nbsp;&nbsp;\-\-  app.py (Entry Point)
+   * [app.py](./backend/app.py) (Entry Point)
 
-&nbsp;&nbsp;\-\-  database.py (Gives you a database connection object, also creates a database.db file if it does not exist)
+   * [database.py](./backend/database.py) (Gives you a database connection object, also creates a database.db file if it does not exist)
 
-&nbsp;&nbsp;\-\-  requirements.txt (Python Dependencies)
+   * [requirements.txt](./backend/requirements.txt) (Python Dependencies)
 
-&nbsp;&nbsp;\-\- recipe\
 
-&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\\_\_init__.py (Tell python that this directory is a package)
+   * [recipe\\](./backend/recipe)
 
-&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\routes.py (All the API endpoints for recipe related uses eg. get-recipe, search-recipe)
+      * [recipe\\_\_init__.py](./backend/recipe/__init__.py) (Tell python that this directory is a package)
 
-&nbsp;&nbsp;&nbsp;&nbsp;\-\- recipe\sql\ (Contains the sql queries for recipe)
+      * [recipe\routes.py](./backend/recipe/routes.py) (All the API endpoints for recipe related uses eg. get-recipe, search-recipe)
 
+      * [recipe\sql\\](./backend/recipe/sql) (Contains the sql queries for recipe)
 
