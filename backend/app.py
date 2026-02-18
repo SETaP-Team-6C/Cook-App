@@ -1,6 +1,6 @@
 from flask import Flask
 
-from backend.database import Database
+from database import Database
 
 from recipe.routes import recipe_bp
 
