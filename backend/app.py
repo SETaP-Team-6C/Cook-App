@@ -1,7 +1,6 @@
 from flask import Flask
 
-from database import Database
-
+from backend.database import Database
 from recipe.routes import recipe_bp
 
 app = Flask(__name__)
