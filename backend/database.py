@@ -1,3 +1,4 @@
+import sqlite3
 from sqlite3 import connect
 from sqlite3 import Connection
 from pathlib import Path
@@ -23,7 +24,10 @@ class Database:
 
 
     def get_connection(self) -> Connection:
-        return connect(self.get_database_path())
+        con = connect(self.get_database_path())
+        con.row_factory = sqlite3.Row
+        return con
+
 
     @staticmethod
     def get_database_path() -> Path:

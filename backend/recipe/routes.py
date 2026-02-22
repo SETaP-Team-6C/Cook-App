@@ -1,5 +1,4 @@
 from pathlib import Path
-from sqlite3 import Row
 
 from flask import blueprints
 
@@ -11,7 +10,6 @@ recipe_bp = blueprints.Blueprint('recipes', __name__)
 def get_recipes():
     db = Database()
     with db.get_connection() as con:
-        con.row_factory = Row
         cur = con.cursor()
         with open(Path('recipe/sql/get_recipes.sql').absolute(), 'r') as sql_file:
             sql = sql_file.read()

@@ -1,5 +1,4 @@
 from pathlib import Path
-from sqlite3 import Row
 
 from flask import blueprints
 from flask import request
@@ -24,7 +23,6 @@ def authenticate():
 
     db = Database()
     with db.get_connection() as con:
-        con.row_factory = Row
         cur = con.cursor()
         with open(Path('authentication/sql/get_user.sql').absolute(), 'r') as sql_file:
             sql = sql_file.read()
