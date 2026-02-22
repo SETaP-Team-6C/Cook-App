@@ -1,6 +1,6 @@
-import sqlite3
 from sqlite3 import connect
 from sqlite3 import Connection
+from sqlite3 import Row
 from pathlib import Path
 
 
@@ -25,7 +25,7 @@ class Database:
 
     def get_connection(self) -> Connection:
         con = connect(self.get_database_path())
-        con.row_factory = sqlite3.Row
+        con.row_factory = Row
         return con
 
 
