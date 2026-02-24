@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                 }, 
                                 child: 
-                                    Text("LOgin"),
+                                    Text("Login"),
                             )
                         ],
                     )
