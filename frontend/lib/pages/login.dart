@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         String userLname = _userLnameController.text;
 
         if (userFname.isEmpty || userLname.isEmpty) {
-            return;
+            return; // this why it needs string and "" isEmpty == true forgot abt it 
         }else {
         await _sendUser(userFname, userLname, newAccount);
         }
