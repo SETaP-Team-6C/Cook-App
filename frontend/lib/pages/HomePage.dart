@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.username});
+  const HomePage({super.key, required this.username, required this.newAccount});
 
   final String username; // changed to reflect user naem
+  final bool newAccount; //check for new account
 
   @override
   State<HomePage> createState() => _MyHomePageState();
