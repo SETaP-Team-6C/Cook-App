@@ -15,7 +15,7 @@
     - run ```pip install -r requirements.txt```, this will install flask to your python install
 
 3. Run Flask
-    - Go into the ```Cook-App/backend``` directory
+    - Go into the ```Cook-App/backend/main``` directory
     - Run
 
         - Windows: ```python -m flask --app app run```
