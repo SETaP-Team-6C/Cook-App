@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
 							),
 							SizedBox(height: 20),
 							TextField(
-								controller: _userLnameController,
+								controller: _userLnameController, // like fields in html so need .value to get value
 								decoration: InputDecoration(
 									labelText: "User last name",
 									border: OutlineInputBorder(),
