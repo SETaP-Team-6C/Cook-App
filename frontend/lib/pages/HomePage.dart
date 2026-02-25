@@ -22,9 +22,15 @@ class _MyHomePageState extends State<HomePage> {
         actions: [ // actions is far right allows for buttons on appBar use leading for left
                     IconButton(
                         onPressed: () {
-                            print("clicked on the accoutn button");
+                            print("account");
                         }, 
                         icon: Icon(Icons.account_box_rounded)
+                    ),
+                    IconButton(
+                        onPressed: () {
+                            print("clicked on the settings button");
+                        }, 
+                        icon: Icon(Icons.settings)
                     )
                 ],
       ),
