@@ -5,3 +5,7 @@ VALUES
     ('Curry'),
     ('Burger'),
     ('Hotdog');
+
+INSERT INTO user (user_fname, user_lname)
+VALUES
+    ('Test', 'User');
