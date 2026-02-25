@@ -1,7 +1,7 @@
 from flask import Flask
 from flask.testing import FlaskClient
 from pytest import fixture
-from backend.app import create_app
+from main.app import create_app
 
 @fixture
 def app() -> Flask:

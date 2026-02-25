@@ -8,7 +8,7 @@ def test_authentication(client: FlaskClient) -> None:
         "user_lname": "user",
     }
 
-    response = client.post("/authentication", body)
+    response = client.post("/authenticate", data=body)
 
     assert response.status_code == 200
     assert response.json["user"]["user_id"] == 1

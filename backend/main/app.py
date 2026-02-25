@@ -1,8 +1,8 @@
 from flask import Flask
 
-from backend.database import Database
-from recipe.routes import recipe_bp
-from authentication.routes import authentication_bp
+from main.database import Database
+from main.recipe.routes import recipe_bp
+from main.authentication.routes import authentication_bp
 
 
 def create_app() -> Flask:

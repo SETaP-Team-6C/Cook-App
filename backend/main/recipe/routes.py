@@ -1,8 +1,7 @@
-from pathlib import Path
-
 from flask import blueprints
 
-from backend.database import Database
+from main.database import Database
+from main.paths import PROJECT_MAIN
 
 recipe_bp = blueprints.Blueprint('recipes', __name__)
 
@@ -11,7 +10,7 @@ def get_recipes():
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
-        with open(Path('recipe/sql/get_recipes.sql').absolute(), 'r') as sql_file:
+        with open(PROJECT_MAIN / "recipe/sql/get_recipes.sql", 'r') as sql_file:
             sql = sql_file.read()
             cur.execute(sql)
 

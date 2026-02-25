@@ -1,10 +1,9 @@
-from pathlib import Path
-
 from flask import blueprints
 from flask import request
 from flask import abort
 
-from backend.database import Database
+from main.database import Database
+from main.paths import PROJECT_MAIN
 
 authentication_bp = blueprints.Blueprint('authentication', __name__)
 
@@ -24,7 +23,7 @@ def authenticate():
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
-        with open(Path('authentication/sql/get_user.sql').absolute(), 'r') as sql_file:
+        with open(PROJECT_MAIN / "authentication/sql/get_user.sql", 'r') as sql_file:
             sql = sql_file.read()
             cur.execute(sql, (user_fname, user_lname))
 
