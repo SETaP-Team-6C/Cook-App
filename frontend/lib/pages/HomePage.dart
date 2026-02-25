@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/profilePage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.username, required this.newAccount});
@@ -22,7 +23,15 @@ class _MyHomePageState extends State<HomePage> {
         actions: [ // actions is far right allows for buttons on appBar use leading for left
                     IconButton(
                         onPressed: () {
-                            print("account");
+                            Navigator.pushReplacement(
+                                context, 
+                                MaterialPageRoute(
+                                    builder: (context) => AccountPage(
+                                        username: widget.username, 
+                                        newAccount: widget.newAccount
+                                    )
+                                )
+                            );     
                         }, 
                         icon: Icon(Icons.account_box_rounded)
                     ),
