@@ -15,6 +15,9 @@ class AppRoutes {
         if (settings.name == null){
             print("is null");
         }
+        if (settings.name!.isEmpty){
+            print("is empty");
+        }
         print("${settings.name}");
         switch (settings.name){
             case login:

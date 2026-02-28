@@ -24,7 +24,7 @@ class _MyHomePageState extends State<HomePage> {
                 actions: [ // actions is far right allows for buttons on appBar use leading for left
                     IconButton(
                         onPressed: () {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                                 context, 
                                 AppRoutes.profile,
                                 arguments: {
@@ -43,6 +43,7 @@ class _MyHomePageState extends State<HomePage> {
                     )
                 ],
             ),
+            // need to do something here like its got no content 
             body: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
