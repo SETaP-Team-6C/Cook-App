@@ -2,6 +2,7 @@ from flask.testing import FlaskClient
 
 from conftest import client
 
+
 def test_recipes(client: FlaskClient) -> None:
     response = client.get('/get-recipes')
     assert response.status_code == 200
