@@ -7,8 +7,9 @@ class AddRecipe extends StatefulWidget{
     State<AddRecipe> createState() => _AddRecipe();
 }
 class _AddRecipe extends State<AddRecipe> {
-    final TextEditingController _recipeNameController = TextEditingController();
-    final _formKey = GlobalKey<FormState>();
+
+    final TextEditingController _recipeNameController = TextEditingController();    
+    final _formKey = GlobalKey<FormState>();                                        //allows us to manage form state and validate all validators
     final List<TextEditingController> _ingredientsController = [];
     final List<TextEditingController> _stepsController = [];
 
@@ -17,7 +18,7 @@ class _AddRecipe extends State<AddRecipe> {
         super.initState();
 
         for (int i = 0; i < 3; i++){
-            _ingredientsController.add(TextEditingController());
+            _ingredientsController.add(TextEditingController());                    // creates 3 of steps and ingredients for starting point
             _stepsController.add(TextEditingController());
         }
     }
@@ -34,10 +35,10 @@ class _AddRecipe extends State<AddRecipe> {
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 title: Text("add reciep Page"),
             ),
-            body: SingleChildScrollView(
+            body: SingleChildScrollView(                                        // becomes scrollable when page overloaded
                 padding: EdgeInsets.all(20),
-                child: Form(
-                    key: _formKey,
+                child: Form(                                                    // container for TextFormField
+                    key: _formKey,                                              
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -61,7 +62,7 @@ class _AddRecipe extends State<AddRecipe> {
                             
                             SizedBox(height: 20),
 
-                            ..._ingredientsController.asMap().entries.map((entry){
+                            ..._ingredientsController.asMap().entries.map((entry){                  // asmap like enumerator entries goves itertor of pairs then just regular map on items and ... returns each field individully as children expects widgets not iterator
                                 int index = entry.key;
                                 TextEditingController controller = entry.value;
                                 return Padding(
