@@ -18,12 +18,19 @@ class _AddRecipe extends State<AddRecipe> {
         super.initState();
 
         for (int i = 0; i < 3; i++){
-            _ingredientsController.add(TextEditingController());                    // creates 3 of steps and ingredients for starting point
+            _ingredientsController.add(TextEditingController());                    // creates 3 of steps and ingredients for starting point at creation
             _stepsController.add(TextEditingController());
         }
     }
     @override
     void dispose(){
+        _recipeNameController.dispose();
+        for(var cont in _ingredientsController){
+        cont.dispose();
+    }
+        for(var cont in _stepsController){
+        cont.dispose();
+    }
         super.dispose();
     }
 
