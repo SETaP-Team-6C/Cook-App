@@ -6,8 +6,7 @@ class HomePage extends StatefulWidget {
 
     final String username; // changed to reflect user naem
     final bool newAccount; //check for new account
-
-    @override
+@override
     State<HomePage> createState() => _MyHomePageState();
 }
 
@@ -74,22 +73,16 @@ class _MyHomePageState extends State<HomePage> {
             body: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                        Container(
-                            height: 400,
-                            width: 400,
-                            child: CarouselView(
-                                itemExtent: 20, // this is why it doesnt show up idk what the idea is/was but it was too small 3 pixels
-                                children: <Widget>[
-                                    Text('Recipes'),
-                                    Text('Profile'),
-                                    Text('Pantry'),
-                                ],
-                            ),
-                        ),
-                        Text('Recipes'),
-                        Text('Profile'),
-                        Text('Pantry'),
+                    children: [
+                        ElevatedButton(
+                            onPressed: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.addRecipe,
+                                );
+                            }, 
+                            child: Text("add recipe")
+                        )
                     ],
                 ),
             ),
