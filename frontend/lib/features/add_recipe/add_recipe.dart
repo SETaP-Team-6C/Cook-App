@@ -1,174 +1,209 @@
 import 'package:flutter/material.dart';
 
-class AddRecipe extends StatefulWidget{
-    const AddRecipe({super.key});
+class AddRecipe extends StatefulWidget {
+  const AddRecipe({super.key});
 
-    @override
-    State<AddRecipe> createState() => _AddRecipe();
+  @override
+  State<AddRecipe> createState() => _AddRecipeState();
 }
-class _AddRecipe extends State<AddRecipe> {
 
-    final TextEditingController _recipeNameController = TextEditingController();    
-    final _formKey = GlobalKey<FormState>();                                        //allows us to manage form state and validate all validators
-    final List<TextEditingController> _ingredientsController = [];
-    final List<TextEditingController> _stepsController = [];
+class _AddRecipeState extends State<AddRecipe> {
+  final TextEditingController _recipeNameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-    @override
-    void initState(){
-        super.initState();
+  final List<TextEditingController> _ingredientsController = [];
+  final List<TextEditingController> _stepsController = [];
 
-        for (int i = 0; i < 3; i++){
-            _ingredientsController.add(TextEditingController());                    // creates 3 of steps and ingredients for starting point at creation
-            _stepsController.add(TextEditingController());
-        }
+  @override
+  void initState() {
+    super.initState();
+
+    for (int i = 0; i < 3; i++) {
+      _ingredientsController.add(TextEditingController());
+      _stepsController.add(TextEditingController());
     }
-    @override
-    void dispose(){
-        _recipeNameController.dispose();
-        for(var cont in _ingredientsController){
-        cont.dispose();
-    }
-        for(var cont in _stepsController){
-        cont.dispose();
-    }
-        super.dispose();
+  }
+
+  @override
+  void dispose() {
+    _recipeNameController.dispose();
+
+    for (var cont in _ingredientsController) {
+      cont.dispose();
     }
 
+    for (var cont in _stepsController) {
+      cont.dispose();
+    }
 
-    @override
-    Widget build(BuildContext context){
-        return Scaffold(
-           appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: Text("add reciep Page"),
-            ),
-            body: SingleChildScrollView(                                        // becomes scrollable when page overloaded
-                padding: EdgeInsets.all(20),
-                child: Form(                                                    // container for TextFormField
-                    key: _formKey,                                              
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            // name
-                            TextFormField(
-                                controller: _recipeNameController,
-                                decoration: InputDecoration(
-                                    labelText: "recipe name",
-                                    border: OutlineInputBorder(),
-                                ),
-                                validator: (value){
-                                    if (value == null || value.isEmpty){
-                                        return "please enter a name";
-                                    }
-                                    return null;
-                                },
-                            ),
-                            SizedBox(height: 20),
+    super.dispose();
+  }
 
-                            Text("ingredients"),
-                            
-                            SizedBox(height: 20),
+  void _saveRecipe() {
+    if (_formKey.currentState!.validate()) {
+      final name = _recipeNameController.text.trim();
 
-                            ..._ingredientsController.asMap().entries.map((entry){                  // asmap like enumerator entries goves itertor of pairs then just regular map on items and ... returns each field individully as children expects widgets not iterator
-                                int index = entry.key;
-                                TextEditingController controller = entry.value;
-                                return Padding(
-                                    padding: EdgeInsets.only(bottom: 20),
-                                    child: TextFormField(
-                                        controller: controller,
-                                        decoration: InputDecoration(
-                                            labelText: "ingredient ${index + 1}:",
-                                            border: OutlineInputBorder(),
-                                        ),
-                                        validator: (value){
-                                            if (value == null || value.isEmpty){
-                                                return "enter ingredients";
-                                            }
-                                            return null;
-                                        },
-                                    )
-                                );
-                            }
-                       ),
+      final ingredients = _ingredientsController
+          .map((c) => c.text.trim())
+          .where((text) => text.isNotEmpty)
+          .toList();
 
-                            ElevatedButton(
-                                onPressed: (){
-                                    setState(() {
-                                        _ingredientsController.add(TextEditingController());
-                                    });
-                                }, 
-                                child: Text(" add ingredient")
-                            ),
+      final steps = _stepsController
+          .map((c) => c.text.trim())
+          .where((text) => text.isNotEmpty)
+          .toList();
 
-                            SizedBox(height: 20),
+      if (ingredients.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please add at least one ingredient"),
+          ),
+        );
+        return;
+      }
 
-                            Text("Enter steps (in order)"),
+      if (steps.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please add at least one step"),
+          ),
+        );
+        return;
+      }
 
-                            SizedBox(height: 20),
+      print("Name: $name");
+      print("Ingredients: $ingredients");
+      print("Steps: $steps");
+    }
+  }
 
-                            ..._stepsController.asMap().entries.map((entry){
-                                int index = entry.key;
-                                TextEditingController controller = entry.value;
-                                return Padding(
-                                    padding: EdgeInsets.only(bottom: 20),
-                                    child: TextFormField(
-                                        controller: controller,
-                                        maxLines: 3,
-                                        decoration: InputDecoration(
-                                            labelText: "step ${index+ 1}:",
-                                            border: OutlineInputBorder(),
-                                        ),
-                                        validator: (value){
-                                            if (value == null || value.isEmpty){
-                                                return "enter step";
-                                            }
-                                            return null;
-                                        },
-                                    )
-                                );
-                            }
-                       ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Add Recipe"),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Recipe Name
+              TextFormField(
+                controller: _recipeNameController,
+                decoration: const InputDecoration(
+                  labelText: "Recipe Name",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Recipe name is required";
+                  }
+                  if (value.trim().length < 3) {
+                    return "Recipe name must be at least 3 characters";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
 
-                            ElevatedButton(
-                                onPressed: (){
-                                    setState(() {
-                                        _stepsController.add(TextEditingController());
-                                    });
-                                }, 
-                                child: Text(" add step")
-                            ),
+              /// Ingredients
+              const Text(
+                "Ingredients",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
 
+              ..._ingredientsController.asMap().entries.map((entry) {
+                int index = entry.key;
+                TextEditingController controller = entry.value;
 
-
-                            SizedBox(height: 20),
-                            Center(
-                                child: ElevatedButton(
-                                    onPressed: (){
-                                        if (_formKey.currentState!.validate()){
-                                            final name = _recipeNameController.text;
-
-                                            final ingredients = _ingredientsController.map((c) => c.text).toList();
-
-                                            final steps = _stepsController.map((c) => c.text).toList();
-
-                                            print("name: ${_recipeNameController.text}");        
-
-                                            print("ingredients: ${ingredients}");
-
-                                            print("steps: ${steps}");
-                                        }
-                                    }, 
-                                    child: Text("save recipe")
-                                )
-                            )
-                        ],
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextFormField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: "Ingredient ${index + 1}",
+                      border: const OutlineInputBorder(),
                     ),
-                )
-            ),
-        ); 
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Ingredient cannot be empty";
+                      }
+                      return null;
+                    },
+                  ),
+                );
+              }),
 
-    }
-    
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _ingredientsController.add(TextEditingController());
+                  });
+                },
+                child: const Text("Add Ingredient"),
+              ),
+
+              const SizedBox(height: 20),
+
+              /// Steps
+              const Text(
+                "Enter Steps (in order)",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+
+              ..._stepsController.asMap().entries.map((entry) {
+                int index = entry.key;
+                TextEditingController controller = entry.value;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextFormField(
+                    controller: controller,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: "Step ${index + 1}",
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Step cannot be empty";
+                      }
+                      if (value.trim().length < 5) {
+                        return "Step must be more descriptive";
+                      }
+                      return null;
+                    },
+                  ),
+                );
+              }),
+
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _stepsController.add(TextEditingController());
+                  });
+                },
+                child: const Text("Add Step"),
+              ),
+
+              const SizedBox(height: 30),
+
+              Center(
+                child: ElevatedButton(
+                  onPressed: _saveRecipe,
+                  child: const Text("Save Recipe"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
-
-
