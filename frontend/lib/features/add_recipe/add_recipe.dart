@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddRecipe extends StatefulWidget {
   const AddRecipe({super.key});
@@ -38,8 +40,32 @@ class _AddRecipeState extends State<AddRecipe> {
 
     super.dispose();
   }
+Future<void> _sendRecipe(name, ingredients , steps) async {
+    try {
+        final response = await http.post(
+            Uri.parse("http://localhost:5000/recipe"),  
+            headers: {
+                "Content-Type": "application/json", 
+            },
+            body: jsonEncode({ 
+                "recipe_name": name,
+                "ingredients": ingredients,
+                "steps": steps
+            }),
+        );
+            print("got in func");
 
-  void _saveRecipe() {
+        if (response.statusCode == 200) {
+            print("hit backend ${response.body}");
+        } else {
+            print("fail ${response.statusCode}");
+        }
+    } catch (e) {
+        print("error here =>: $e");
+    }
+}
+
+  Future<void> _saveRecipe() async {
     if (_formKey.currentState!.validate()) {
       final name = _recipeNameController.text.trim();
 
@@ -70,12 +96,15 @@ class _AddRecipeState extends State<AddRecipe> {
         );
         return;
       }
+      await _sendRecipe(name, ingredients,steps);
 
       print("Name: $name");
       print("Ingredients: $ingredients");
       print("Steps: $steps");
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
