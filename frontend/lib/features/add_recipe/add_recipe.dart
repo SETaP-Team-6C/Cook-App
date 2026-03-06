@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -89,11 +90,11 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
       final time = _timeController.text.trim();
       final difficulty = _difficultySelector;
 
-      final ingredients = _ingredients.map((ingredient){
-        return{
-            "ingredient-name":ingredient.name.text.trim(),
-            "ingredient-amount": ingredient.amount.text.trim(),
-            "ingredient-calories": ingredient.calories.text.trim(),
+      final ingredients = _ingredients.map((ingredient) {
+        return {
+            "ingredient-name": ingredient.name.text.trim(),
+            "ingredient-amount": int.parse(ingredient.amount.text.trim()),
+            "ingredient-calories": int.parse(ingredient.calories.text.trim()),
         };
       }).toList();
 
@@ -233,6 +234,8 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                         flex: 2,
                         child: TextFormField(
                             controller: controller.amount,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
                                 labelText: "Ingredient amount",
                                 border: OutlineInputBorder(),
@@ -252,6 +255,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                         flex: 2,
                         child: TextFormField(
                             controller: controller.calories,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             decoration: const InputDecoration(
                                 labelText: "Ingredient calories",
                                 border: OutlineInputBorder(),
@@ -260,13 +264,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                                 if (value == null || value.trim().isEmpty){
                                     return "enter a valid amount";
                                 }
-                                final calories = int.tryParse(value);
-                                if (calories == null){
-                                    return "must be a number ";
-                                }
-                                if (calories < 0){
-                                    return "must be a positve number";
-                                }
+
                                 return null;
                             },
                           keyboardType: TextInputType.number,
