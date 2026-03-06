@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// todo: add recipe time, recipe calories
+// future version will also need dietary requirements
+
 class AddRecipe extends StatefulWidget {
   const AddRecipe({super.key});
 
@@ -43,16 +46,17 @@ class _AddRecipeState extends State<AddRecipe> {
 Future<void> _sendRecipe(name, ingredients , steps) async {
     try {
         final response = await http.post(
-            Uri.parse("http://localhost:5000/recipe"),  
+            Uri.parse("http://localhost:5000/add-recipe"),
             headers: {
                 "Content-Type": "application/json", 
             },
-            body: jsonEncode({ 
-                "recipe_name": name,
-                "ingredients": ingredients,
-                "steps": steps
+            body: jsonEncode({
+                "recipe-title": name,
+                "recipe-ingredients": ingredients,
+                "recipe-steps": steps
             }),
         );
+            // todo: add the index for the recipe steps!
             print("got in func");
 
         if (response.statusCode == 200) {
