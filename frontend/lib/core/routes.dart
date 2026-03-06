@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/features/recipe/home_page.dart';
 import 'package:frontend/features/authen/login_page.dart';
 import 'package:frontend/features/profile/profile_page.dart';
+import 'package:frontend/features/add_recipe/add_recipe.dart';
 
 
 class AppRoutes {
@@ -9,6 +10,7 @@ class AppRoutes {
     static const String login = "/login";
     static const String home = "/home";
     static const String profile = "/profile";
+    static const String addRecipe = "/addRecipe";
 
     //routes
     static Route<dynamic> generateRoute(RouteSettings settings){
@@ -39,6 +41,10 @@ class AppRoutes {
                         username: args["username"],
                         newAccount: args["newAccount"],
                     )
+                );
+            case addRecipe:
+                return MaterialPageRoute(
+                    builder: (_) => AddRecipe()
                 );
             default:
                 return MaterialPageRoute(
