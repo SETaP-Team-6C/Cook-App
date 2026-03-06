@@ -38,7 +38,7 @@ CREATE TABLE recipe_ingredient (
     recipe_ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_id INTEGER NOT NULL,
     recipe_ingredient_name TEXT NOT NULL,
-    recipe_quantity INTEGER NOT NULL DEFAULT (1),
+    recipe_ingredient_quantity INTEGER NOT NULL DEFAULT (1),
     FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id)
 );
 
