@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// todo: add recipe time, recipe calories
-// future version will also need dietary requirements
 class Ingredient {
   final TextEditingController name = TextEditingController();
   final TextEditingController amount = TextEditingController();
