@@ -7,6 +7,7 @@ class Ingredient {
   final TextEditingController name = TextEditingController();
   final TextEditingController amount = TextEditingController();
   final TextEditingController calories = TextEditingController();
+  String? amountUnits;
 }
 
 class AddRecipe extends StatefulWidget {
@@ -93,6 +94,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
             "ingredient-name": ingredient.name.text.trim(),
             "ingredient-amount": int.parse(ingredient.amount.text.trim()),
             "ingredient-calories": int.parse(ingredient.calories.text.trim()),
+            "ingredient-unit": ingredient.amountUnits
         };
       }).toList();
 
@@ -226,7 +228,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                         ),
                       ),
 
-                       const SizedBox(height: 20),
+                       const SizedBox(width: 20),
 
                        Expanded(
                         flex: 2,
@@ -247,7 +249,37 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                         ),
                       ),
 
-                       const SizedBox(height: 20),
+                       const SizedBox(width: 20),
+
+                       Expanded(
+                        flex: 2,
+                        child: DropdownButtonFormField<String>(
+                            initialValue: controller.amountUnits,
+                            decoration: const InputDecoration(
+                                labelText: "select Units",
+                                border: OutlineInputBorder(),
+                            ),
+                        items: ["g","KG", "ml","L"].map((item)=>
+                            DropdownMenuItem(
+                                        value:item, 
+                                        child:Text(item)
+                          )
+                        ).toList(),
+                        onChanged: (value){
+                                setState((){
+                                    controller.amountUnits = value;
+                                });
+                            },
+                        validator: (value){
+                                if (value == null || value.isEmpty){
+                                    return "please select a unit";
+                                }
+                                return null;
+                            }
+                          ),
+                        ),
+
+                       const SizedBox(width: 20),
 
                        Expanded(
                         flex: 2,
