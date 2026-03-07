@@ -25,11 +25,12 @@ class AddRecipe extends StatefulWidget {
 
 class _AddRecipeState extends State<AddRecipe> {
   final TextEditingController _recipeNameController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
+
+  final TextEditingController _hoursController = TextEditingController();
+  final TextEditingController _minutesController = TextEditingController();
   
   final _formKey = GlobalKey<FormState>();
 
-  final List<TextEditingController> _stepsController = [];
   final List<Ingredient> _ingredients = [];
   final List<StepItem> _steps = [];
 
@@ -41,7 +42,6 @@ class _AddRecipeState extends State<AddRecipe> {
     super.initState();
 
     for (int i = 0; i < 3; i++) {
-      _stepsController.add(TextEditingController());
       _ingredients.add(Ingredient());
       _steps.add(StepItem());
 
@@ -51,7 +51,8 @@ class _AddRecipeState extends State<AddRecipe> {
   @override
   void dispose() {
     _recipeNameController.dispose();
-    _timeController.dispose();
+    _hoursController.dispose();
+    _minutesController.dispose();
 
     for (var cont in _ingredients) {
       cont.name.dispose();
@@ -59,11 +60,11 @@ class _AddRecipeState extends State<AddRecipe> {
       cont.calories.dispose();
     }
 
-    for (var cont in _stepsController) {
-      cont.dispose();
-    }
     for (var cont in _steps){
-        // TODo
+        cont.controller.dispose();
+        for (var subCont in cont.subSteps){
+            subCont.dispose();
+    }
     }
 
     super.dispose();
@@ -94,11 +95,25 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
         print("error here =>: $e");
     }
 }
+  String _durationToISO(int hours, int minutes){
+        String result = "PT";
+        if (hours > 0){
+            result += "${hours}H";
+        }
+        if (minutes > 0){
+            result += "${minutes}M";
+        }
+        if (result == "PT"){
+            result += "0M";
+        }
+        return result;
+    }
 
   Future<void> _saveRecipe() async {
     if (_formKey.currentState!.validate()) {
       final name = _recipeNameController.text.trim();
-      final time = _timeController.text.trim();
+      int hour = int.tryParse(_hoursController.text.trim()) ?? 0;
+      int minutes = int.tryParse(_minutesController.text.trim()) ?? 0;
       final difficulty = _difficultySelector;
 
       final ingredients = _ingredients.map((ingredient) {
@@ -110,19 +125,31 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
         };
       }).toList();
 
-      final steps = _stepsController
-          .map((c) => c.text.trim())
-          .where((text) => text.isNotEmpty)
-          .toList();
+      final steps = _steps.asMap().entries.map((entry){
 
-      if (steps.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Please add at least one step"),
-          ),
-        );
-        return;
-      }
+        int stepIndex = entry.key;
+        var step = entry.value;
+
+        return{
+            "step-number": stepIndex + 1,   
+            "step": step.controller.text.trim(),
+            "substeps": step.subSteps.asMap().entries
+                        .map((subEntry){
+                            int subIndex = subEntry.key;
+                            var subStep = subEntry.value;
+
+                            return {
+                                "step-number": "${stepIndex + 1}.${subIndex + 1}",
+                                "text": subStep.text.trim() 
+                            };
+                        })
+                        .where((sub)=> (sub["text"] as String).isNotEmpty)
+                        .toList()
+        };
+      }).toList();
+
+      final time = _durationToISO(hour, minutes);
+
       await _sendRecipe(name, ingredients,steps,time,difficulty);
 
       print("Name: $name");
@@ -130,6 +157,8 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
       print("Steps: $steps");
       print("${time}");
       print("${difficulty}");
+      print("/n");
+      print("${steps}");
     }
   }
 
@@ -168,20 +197,51 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               ),
               const SizedBox(height: 20),
 
-              /// Recipe time
-              TextFormField(
-                controller: _timeController,
-                decoration: const InputDecoration(
-                  labelText: "Recipe expected time",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Recipe expected time is required";
-                  }
-                  return null;
-                },
+              const Text("cook time"),
+
+              const SizedBox(height: 20),
+              
+              Row(
+                children: [
+                    Expanded(
+                        child: TextFormField(
+                            controller: _hoursController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            decoration: const InputDecoration(
+                                labelText: "Hours",
+                                border: OutlineInputBorder(),
+                      ),
+                            validator: (value){
+                                if (value == null || value.isEmpty){
+                                    return "please enter a valid hour";
+                                }
+                                return null;
+                        },
+                    ),
+                  ),
+                    const SizedBox(width: 20,),
+
+                    Expanded(
+                        child: TextFormField(
+                            controller: _minutesController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            decoration: const InputDecoration(
+                                labelText: "minutes",
+                                border: OutlineInputBorder(),
+                      ),
+                            validator: (value){
+                                if (value == null || value.isEmpty){
+                                    return "please enter a valid minute";
+                                }
+                                return null;
+                        },
+                    ),
+                  ),
+                ], 
               ),
+
               const SizedBox(height: 20),
               
               DropdownButtonFormField<String>(
