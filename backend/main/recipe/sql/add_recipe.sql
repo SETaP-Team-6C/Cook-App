@@ -1,2 +1,2 @@
-INSERT INTO recipe (recipe_title)
-VALUES (?);
+INSERT INTO recipe (recipe_title, recipe_time, recipe_difficulty)
+VALUES (?, ?, ?);

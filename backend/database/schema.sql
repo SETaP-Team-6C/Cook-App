@@ -21,7 +21,7 @@ CREATE TABLE recipe (
     recipe_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_title TEXT NOT NULL,
     recipe_time TEXT,
-    recipe_calories INTEGER
+    recipe_difficulty TEXT
 );
 
 CREATE TABLE completed_recipe (
@@ -38,7 +38,9 @@ CREATE TABLE recipe_ingredient (
     recipe_ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_id INTEGER NOT NULL,
     recipe_ingredient_name TEXT NOT NULL,
-    recipe_ingredient_quantity INTEGER NOT NULL DEFAULT (1),
+    recipe_ingredient_amount INTEGER NOT NULL DEFAULT (1),
+    recipe_ingredient_unit TEXT,
+    recipe_ingredient_calories INTEGER,
     FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id)
 );
 
