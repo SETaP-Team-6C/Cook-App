@@ -9,6 +9,12 @@ class Ingredient {
   final TextEditingController calories = TextEditingController();
   String? amountUnits;
 }
+//gonna follow the same format as ingredients and make step into a class
+class StepItem {
+    final TextEditingController controller = TextEditingController();
+    final List<TextEditingController> subSteps = [];
+  
+}
 
 class AddRecipe extends StatefulWidget {
   const AddRecipe({super.key});
@@ -25,16 +31,19 @@ class _AddRecipeState extends State<AddRecipe> {
 
   final List<TextEditingController> _stepsController = [];
   final List<Ingredient> _ingredients = [];
+  final List<StepItem> _steps = [];
 
   String? _difficultySelector;
 
   @override
   void initState() {
+        // intialise 
     super.initState();
 
     for (int i = 0; i < 3; i++) {
       _stepsController.add(TextEditingController());
       _ingredients.add(Ingredient());
+      _steps.add(StepItem());
 
     }
   }
@@ -52,6 +61,9 @@ class _AddRecipeState extends State<AddRecipe> {
 
     for (var cont in _stepsController) {
       cont.dispose();
+    }
+    for (var cont in _steps){
+        // TODo
     }
 
     super.dispose();
@@ -323,38 +335,73 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               ),
               const SizedBox(height: 20),
 
-              ..._stepsController.asMap().entries.map((entry) {
-                int index = entry.key;
-                TextEditingController controller = entry.value;
+              ..._steps.asMap().entries.map((entry) {
+                int stepIndex = entry.key;
+                StepItem step = entry.value;
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: TextFormField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      labelText: "Step ${index + 1}",
-                      border: const OutlineInputBorder(),
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: TextFormField(
+                                controller: step.controller,
+                                decoration: InputDecoration(
+                                    labelText: "Step ${stepIndex + 1}:",
+                                    border: const OutlineInputBorder()
+                        ),
+                           validator: (value){
+                            if (value == null || value.isEmpty){
+                                return "please enter a valid step";
+                            }
+                            return null;
+                        },
+                      ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Step cannot be empty";
-                      }
-                      return null;
-                    },
-                  ),
+                     ...step.subSteps.asMap().entries.map((subEntry){
+                        int subIndex = subEntry.key;
+                        TextEditingController subController = subEntry.value;
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 20, bottom: 10),
+                            child: TextFormField(
+                                controller: subController,
+                                decoration: InputDecoration(
+                                    labelText: "Sub step ${stepIndex + 1}.${subIndex + 1}:",
+                                    border: OutlineInputBorder()
+                          ),
+                              validator: (value){
+                                if (value == null || value.isEmpty){
+                                    return "please enter valid sub step";
+                                }
+                                return null;
+                            },
+                        ),
+                      );
+                    }), 
+                    ElevatedButton(
+                        onPressed: (){
+                            setState((){
+                            step.subSteps.add(TextEditingController());
+                        }); 
+                      },
+                        child: const Text("add sub step"),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 );
               }),
+        
+
+              const SizedBox(height: 30),
 
               ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _stepsController.add(TextEditingController());
-                  });
-                },
-                child: const Text("Add Step"),
-              ),
-              
-              const SizedBox(height: 30),
+                    onPressed: (){
+                        setState(() {
+                            _steps.add(StepItem());
+                });
+              },
+                  child: const Text("add Step"),
+            ),
 
               Center(
                 child: ElevatedButton(
