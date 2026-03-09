@@ -89,9 +89,6 @@ class _AddRecipeState extends State<AddRecipe> {
     return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                    const SizedBox(height: 20),
-
-                    const Text("cook time"),
 
                     const SizedBox(height: 20),
                     Row(
@@ -460,7 +457,16 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                                 children: [
                                     buildTextInputField(
                                     controller: subStep.subStep,
-                                    label: "Sub Step ${stepIndex + 1}.${subIndex + 1}:"
+                                    label: "Sub Step ${stepIndex + 1}.${subIndex + 1}:",
+                                    validator: (value){
+                                        if (value == null || value.trim().isEmpty){
+                                            return "please enter a valid sub step";
+                                        }
+                                        if (value.trim().length < 3){
+                                            return "please enter a longer sub step";
+                                        }
+                                        return null;
+                                    }
                                 ),
 
                                 buildDurationFields(subStep.subHours,subStep.subMinutes),
