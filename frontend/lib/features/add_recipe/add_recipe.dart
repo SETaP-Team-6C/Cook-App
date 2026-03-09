@@ -9,10 +9,19 @@ class Ingredient {
   final TextEditingController calories = TextEditingController();
   String? amountUnits;
 }
+class SubStep {
+  final TextEditingController subStep = TextEditingController();
+  
+  final TextEditingController subMinutes = TextEditingController();
+  final TextEditingController subHours = TextEditingController();
+}
 //gonna follow the same format as ingredients and make step into a class
 class StepItem {
     final TextEditingController controller = TextEditingController();
-    final List<TextEditingController> subSteps = [];
+    final List<SubStep> subSteps = [];
+
+    final TextEditingController minutes = TextEditingController();
+    final TextEditingController hours = TextEditingController();
   
 }
 
@@ -62,13 +71,81 @@ class _AddRecipeState extends State<AddRecipe> {
 
     for (var cont in _steps){
         cont.controller.dispose();
+        cont.hours.dispose();
+        cont.minutes.dispose();
+
         for (var subCont in cont.subSteps){
-            subCont.dispose();
+            subCont.subStep.dispose();
+            subCont.subMinutes.dispose();
+            subCont.subHours.dispose();
     }
     }
 
     super.dispose();
   }
+    
+ Widget buildDurationFields(TextEditingController hours, TextEditingController minutes){
+    
+    return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                    const SizedBox(height: 20),
+
+                    const Text("cook time"),
+
+                    const SizedBox(height: 20),
+                    Row(
+                    children: [
+
+                        Expanded(
+                            child: TextFormField(
+                                controller: hours,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                decoration: const InputDecoration(
+                                    labelText: "hours",
+                                    border: OutlineInputBorder(),
+                                ),
+                            )
+                        ),
+                        const SizedBox(width: 20),
+
+                        Expanded(
+                            child: TextFormField(
+                                controller: minutes,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                decoration: const InputDecoration(
+                                    labelText: "minutes",
+                                    border: OutlineInputBorder(),
+                                ),
+                            )
+                        )
+                    ],
+                )
+
+            ],
+        ); 
+} 
+    Widget buildTextInputField({
+        required TextEditingController controller, 
+        required String label,
+        TextInputType keyboardType = TextInputType.text,
+        List<TextInputFormatter> ? inputFormatters, 
+        String? Function(String?)? validator
+    }){
+        return TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            decoration: InputDecoration(
+                labelText: label,
+                border: const OutlineInputBorder(),
+            ),
+            validator: validator,
+        );
+    }
+    
 Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
     try {
         final response = await http.post(
@@ -112,8 +189,10 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
   Future<void> _saveRecipe() async {
     if (_formKey.currentState!.validate()) {
       final name = _recipeNameController.text.trim();
+
       int hour = int.tryParse(_hoursController.text.trim()) ?? 0;
       int minutes = int.tryParse(_minutesController.text.trim()) ?? 0;
+
       final difficulty = _difficultySelector;
 
       final ingredients = _ingredients.map((ingredient) {
@@ -124,29 +203,35 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
             "ingredient-unit": ingredient.amountUnits
         };
       }).toList();
+      final List<Map<String, dynamic>> steps = [];
 
-      final steps = _steps.asMap().entries.map((entry){
-
+      for (var entry in _steps.asMap().entries){
         int stepIndex = entry.key;
         var step = entry.value;
 
-        return{
-            "step-number": stepIndex + 1,   
-            "step": step.controller.text.trim(),
-            "substeps": step.subSteps.asMap().entries
-                        .map((subEntry){
-                            int subIndex = subEntry.key;
-                            var subStep = subEntry.value;
+        int stepHours = int.tryParse(step.hours.text) ?? 0;
+        int stepMinutes = int.tryParse(step.minutes.text) ?? 0;
 
-                            return {
-                                "step-number": "${stepIndex + 1}.${subIndex + 1}",
-                                "text": subStep.text.trim() 
-                            };
-                        })
-                        .where((sub)=> (sub["text"] as String).isNotEmpty)
-                        .toList()
-        };
-      }).toList();
+
+        steps.add({
+            "step-index": stepIndex + 1,
+            "step-description": step.controller.text.trim(),
+            "step-duration": _durationToISO(stepHours,stepMinutes),
+        });
+        for (var subEntry in step.subSteps.asMap().entries){
+          int subIndex = subEntry.key;
+          var subStep = subEntry.value;
+
+          steps.add({
+              "step-index": double.parse("${stepIndex + 1}.${subIndex + 1}"),
+              "step-description": subStep.subStep.text.trim(),
+              "step-duration": _durationToISO(int.tryParse(subStep.subHours.text.trim()) ?? 0,int.tryParse(subStep.subMinutes.text.trim()) ?? 0),
+                
+          });
+        }
+          
+      }
+
 
       final time = _durationToISO(hour, minutes);
 
@@ -179,68 +264,21 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// Recipe Name
-              TextFormField(
+              buildTextInputField(
                 controller: _recipeNameController,
-                decoration: const InputDecoration(
-                  labelText: "Recipe Name",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Recipe name is required";
-                  }
-                  if (value.trim().length < 3) {
-                    return "Recipe name must be at least 3 characters";
-                  }
-                  return null;
-                },
+                label: "Recipe name:",
+                validator: (value){
+                    if (value == null || value.trim().isEmpty){
+                      return "Recipe name is required";  
+                    }                     
+                    if (value.trim().length < 3){
+                        return "Recipe name must be at least 3 characters";
+                    }
+                    return null;
+                }
               ),
-              const SizedBox(height: 20),
 
-              const Text("cook time"),
-
-              const SizedBox(height: 20),
-              
-              Row(
-                children: [
-                    Expanded(
-                        child: TextFormField(
-                            controller: _hoursController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            decoration: const InputDecoration(
-                                labelText: "Hours",
-                                border: OutlineInputBorder(),
-                      ),
-                            validator: (value){
-                                if (value == null || value.isEmpty){
-                                    return "please enter a valid hour";
-                                }
-                                return null;
-                        },
-                    ),
-                  ),
-                    const SizedBox(width: 20,),
-
-                    Expanded(
-                        child: TextFormField(
-                            controller: _minutesController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            decoration: const InputDecoration(
-                                labelText: "minutes",
-                                border: OutlineInputBorder(),
-                      ),
-                            validator: (value){
-                                if (value == null || value.isEmpty){
-                                    return "please enter a valid minute";
-                                }
-                                return null;
-                        },
-                    ),
-                  ),
-                ], 
-              ),
+              buildDurationFields(_hoursController,_minutesController),
 
               const SizedBox(height: 20),
               
@@ -285,36 +323,30 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                     children: [
                         Expanded(
                             flex: 3,
-                            child: TextFormField(
+                            child: buildTextInputField(
                                 controller: controller.name,
-                                decoration: const InputDecoration(
-                                    labelText: "Ingredient name",
-                                    border: OutlineInputBorder(),
-                          ),
-                            validator: (value){
-                                if (value == null || value.trim().isEmpty){
-                                    return "enter a valid name";
-                                }
-                                return null;
-                            },
+                                label: "enter and ingredient:",
+                                validator: (value){
+                                    if (value == null || value.trim().isEmpty){
+                                        return "enter a valid name";
+                                    }
+                                    return null;
+                                },
+                            ),
                         ),
-                      ),
 
                        const SizedBox(width: 20),
 
                        Expanded(
                         flex: 2,
-                        child: TextFormField(
+                        child: buildTextInputField(
                             controller: controller.amount,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                                labelText: "Ingredient amount",
-                                border: OutlineInputBorder(),
-                          ),
+                            label: "enter a ingredient quantity",
                             validator: (value){
                                 if (value == null || value.trim().isEmpty){
-                                    return "enter a valid amount";
+                                    return "enter a valid quantity";
                                 }
                                 return null;
                             },
@@ -355,13 +387,10 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
 
                        Expanded(
                         flex: 2,
-                        child: TextFormField(
+                        child: buildTextInputField(
                             controller: controller.calories,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            decoration: const InputDecoration(
-                                labelText: "Ingredient calories",
-                                border: OutlineInputBorder(),
-                          ),
+                            label: "ingredient calories",
                             validator: (value){
                                 if (value == null || value.trim().isEmpty){
                                     return "enter a valid amount";
@@ -404,44 +433,50 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                     children: [
                        Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: TextFormField(
+                            child: buildTextInputField(
                                 controller: step.controller,
-                                decoration: InputDecoration(
-                                    labelText: "Step ${stepIndex + 1}:",
-                                    border: const OutlineInputBorder()
+                                label: " Step ${stepIndex + 1}:",
+                                validator: (value){
+                                    if (value == null || value.isEmpty){
+                                        return "please enter a valid step";
+                                    }
+                                    return null;
+                                },
+                            ),
                         ),
-                           validator: (value){
-                            if (value == null || value.isEmpty){
-                                return "please enter a valid step";
-                            }
-                            return null;
-                        },
-                      ),
-                    ),
+
+                        
+                     buildDurationFields(step.hours,step.minutes),
+
+                     const SizedBox(height: 20),
+                      
                      ...step.subSteps.asMap().entries.map((subEntry){
                         int subIndex = subEntry.key;
-                        TextEditingController subController = subEntry.value;
+                        SubStep subStep = subEntry.value;
                         return Padding(
-                            padding: const EdgeInsets.only(left: 20, bottom: 10),
-                            child: TextFormField(
-                                controller: subController,
-                                decoration: InputDecoration(
-                                    labelText: "Sub step ${stepIndex + 1}.${subIndex + 1}:",
-                                    border: OutlineInputBorder()
-                          ),
-                              validator: (value){
-                                if (value == null || value.isEmpty){
-                                    return "please enter valid sub step";
-                                }
-                                return null;
-                            },
-                        ),
-                      );
-                    }), 
+                            padding: const EdgeInsets.only(left: 20, bottom: 20),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    buildTextInputField(
+                                    controller: subStep.subStep,
+                                    label: "Sub Step ${stepIndex + 1}.${subIndex + 1}:"
+                                ),
+
+                                buildDurationFields(subStep.subHours,subStep.subMinutes),
+
+
+                             ],
+                            ),
+                        );
+                    }),
+                    const SizedBox(height: 20),
+
+                      
                     ElevatedButton(
                         onPressed: (){
                             setState((){
-                            step.subSteps.add(TextEditingController());
+                            step.subSteps.add(SubStep());
                         }); 
                       },
                         child: const Text("add sub step"),
@@ -452,7 +487,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               }),
         
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               ElevatedButton(
                     onPressed: (){
@@ -462,6 +497,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               },
                   child: const Text("add Step"),
             ),
+            const SizedBox(height: 20),
 
               Center(
                 child: ElevatedButton(
