@@ -1,120 +1,145 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
+import 'package:frontend/features/authen/create_account.dart';
 import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
-    const LoginPage({super.key});
+  const LoginPage({super.key});
 
-    @override
-    _LoginPageState createState() => _LoginPageState();
+  @override
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-    final TextEditingController _userFnameController = TextEditingController();
-    final TextEditingController _userLnameController = TextEditingController();
+  final TextEditingController _userFnameController = TextEditingController();
+  final TextEditingController _userLnameController = TextEditingController();
 
-    // async func returns Future of type void is like in rust needs 
-    Future<void> _sendUser(userFname, userLname, newAccount) async {
-        try {
-            final response = await http.post(
-                Uri.parse("http://localhost:5000/authenticate"), // need to change per create account and login :) 
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded", // changed as backend requests form
-                },
-                body: { // removed json encode as again form backend
-                    "user_fname": userFname,
-                    "user_lname": userLname,
-                },
-            );
+  // async func returns Future of type void is like in rust needs
+  Future<void> _sendUser(userFname, userLname, newAccount) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          "http://localhost:5000/authenticate",
+        ), // need to change per create account and login :)
+        headers: {
+          "Content-Type":
+              "application/x-www-form-urlencoded", // changed as backend requests form
+        },
+        body: {
+          // removed json encode as again form backend
+          "user_fname": userFname,
+          "user_lname": userLname,
+        },
+      );
 
-            if (response.statusCode == 200) {
-                print("yipppeee it works (hit backend) ${response.body}");
-            } else {
-                print("fail somewhere ${response.statusCode}");
-            }
-        } catch (e) {
-            print("error here =>: $e");
-        }
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(newAccount ? "Account created!" : "Login successful!"))
+      if (response.statusCode == 200) {
+        print("yipppeee it works (hit backend) ${response.body}");
+      } else {
+        print("fail somewhere ${response.statusCode}");
+      }
+    } catch (e) {
+      print("error here =>: $e");
+    }
+  }
+
+  void _handleAuth(bool newAccount) async {
+    String userFname = _userFnameController.text;
+    String userLname = _userLnameController.text;
+
+    if (userFname.isEmpty || userLname.isEmpty) {
+      return; // this why it needs string and "" isEmpty == true forgot abt it
+    } else {
+      await _sendUser(userFname, userLname, newAccount);
+    }
+
+    String username = "$userFname $userLname";
+
+    Navigator.pushReplacementNamed(
+      // uses named routing now instead of direct calling
+      context,
+      AppRoutes.home,
+      arguments: {"username": username, "newAccount": newAccount},
     );
-}
-    }
+  }
 
-    void _handleAuth(bool newAccount) async {
-        String userFname = _userFnameController.text;
-        String userLname = _userLnameController.text;
+  @override
+  void dispose() {
+    // clean up
+    _userFnameController.dispose();
+    _userLnameController.dispose();
+    super.dispose();
+  }
 
-        if (userFname.isEmpty || userLname.isEmpty) {
-            return; // this why it needs string and "" isEmpty == true forgot abt it 
-        } else {
-            await _sendUser(userFname, userLname, newAccount);
-        }
-
-        String username = "$userFname $userLname";
-
-        Navigator.pushReplacementNamed(  // uses named routing now instead of direct calling
-            context,
-            AppRoutes.home,
-            arguments:{
-                "username": username,
-                "newAccount":newAccount
-            }
-        );
-    }
-
-    @override
-    void dispose() {
-        // clean up 
-        _userFnameController.dispose();
-        _userLnameController.dispose();
-        super.dispose();
-    }
-
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-                title: Text("Login"),
-                automaticallyImplyLeading: false,
-                centerTitle: true,
-            ),
-            body: Center(
-                child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                            TextField(
-                                controller: _userFnameController, // allows use of value
-                                decoration: InputDecoration(
-                                    labelText: "User first name",
-                                    border: OutlineInputBorder(),
-                                ),
-                            ),
-                            SizedBox(height: 20),
-                            TextField(
-                                controller: _userLnameController, // like fields in html so need .value to get value
-                                decoration: InputDecoration(
-                                    labelText: "User last name",
-                                    border: OutlineInputBorder(),
-                                ),
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                                onPressed: () => _handleAuth(false), // what happens on press func
-                                child: Text("Login"),
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                                onPressed: () => _handleAuth(true),
-                                child: Text("Create Account"),
-                            ),
-                        ],
-                    ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Login"),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _userFnameController, // allows use of value
+                decoration: InputDecoration(
+                  labelText: "User first name",
+                  border: OutlineInputBorder(),
                 ),
-            ),
-        );
-    }
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller:
+                    _userLnameController, // like fields in html so need .value to get value
+                decoration: InputDecoration(
+                  labelText: "User last name",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () =>
+                    _handleAuth(false), // what happens on press func
+                child: Text("Login"),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  // Push CreateAccount and await returned result (username/newAccount)
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CreateAccount()),
+                  );
+                  if (result is Map && result['username'] != null) {
+                    // If the create account screen returned a message, show it briefly
+                    if (result['message'] != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(result['message'].toString())),
+                      );
+                      // allow a short moment for the SnackBar to appear before navigating
+                      await Future.delayed(const Duration(milliseconds: 300));
+                    }
+
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.home,
+                      arguments: {
+                        'username': result['username'],
+                        'newAccount': result['newAccount'] ?? true,
+                      },
+                    );
+                  }
+                },
+                child: const Text("Create Account"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
