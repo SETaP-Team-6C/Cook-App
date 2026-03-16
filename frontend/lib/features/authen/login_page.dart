@@ -35,6 +35,11 @@ class _LoginPageState extends State<LoginPage> {
         } catch (e) {
             print("error here =>: $e");
         }
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(newAccount ? "Account created!" : "Login successful!"))
+    );
+}
     }
 
     void _handleAuth(bool newAccount) async {
