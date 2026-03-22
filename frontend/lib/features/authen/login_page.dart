@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
 import 'package:http/http.dart' as http;
@@ -37,11 +39,23 @@ class _LoginPageState extends State<LoginPage> {
           "user_password": password,
         },
       );
+      final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (data["success"] == true) {
+        String username = "$userFname $userLname";
+
+        Navigator.pushReplacementNamed(
+          // uses named routing now instead of direct calling
+          context,
+          AppRoutes.home,
+          arguments: {"username": username, "newAccount": newAccount},
+        );
         print("yipppeee it works (hit backend) ${response.body}");
       } else {
         print("fail somewhere ${response.statusCode}");
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("login failed invaild creds")));
       }
     } catch (e) {
       print("error here =>: $e");
@@ -54,15 +68,6 @@ class _LoginPageState extends State<LoginPage> {
     String userPassword = user._passwordController.text.trim();
 
     await _sendUser(userFname, userLname, userPassword, newAccount);
-
-    String username = "$userFname $userLname";
-
-    Navigator.pushReplacementNamed(
-      // uses named routing now instead of direct calling
-      context,
-      AppRoutes.home,
-      arguments: {"username": username, "newAccount": newAccount},
-    );
   }
 
   @override

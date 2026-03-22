@@ -1,4 +1,4 @@
-from flask import blueprints
+from flask import blueprints, jsonify
 from flask import request
 from flask import abort
 
@@ -35,7 +35,9 @@ def authenticate():
 
         if user is None:
             # No user exists or information wrong so return not authenticated
-            abort(401)
+            return jsonify({"success": False, "message": "login fail"})
+        elif user:
+            return jsonify({"success": True, "message": "login success"})
 
         user_data = dict(user)
 
