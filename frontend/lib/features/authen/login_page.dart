@@ -21,6 +21,15 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final User user = User();
 
+  void showMsg(BuildContext context, String msg, int time) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${msg}"),
+        duration: Duration(seconds: time),
+      ),
+    );
+  }
+
   // async func returns Future of type void is like in rust needs
   Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
@@ -40,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
       final data = jsonDecode(response.body);
+      print(data);
 
       if (data["success"] == true) {
         String username = "$userFname $userLname";
@@ -51,14 +61,12 @@ class _LoginPageState extends State<LoginPage> {
           arguments: {"username": username, "newAccount": newAccount},
         );
         print("yipppeee it works (hit backend) ${response.body}");
+        showMsg(context, "logged in", 2);
       } else {
-        print("fail somewhere ${response.statusCode}");
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("login failed invaild creds")));
+        showMsg(context, "invalid credientials", 2);
       }
     } catch (e) {
-      print("error here =>: $e");
+      showMsg(context, "server error", 2);
     }
   }
 

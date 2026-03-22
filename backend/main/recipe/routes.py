@@ -39,7 +39,6 @@ def add_recipe():
         abort(415)
 
     data = request.get_json()
-    print(data)
 
     if "recipe-ingredients" not in data:
         abort(400)
