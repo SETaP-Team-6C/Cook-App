@@ -9,20 +9,21 @@ class Ingredient {
   final TextEditingController calories = TextEditingController();
   String? amountUnits;
 }
+
 class SubStep {
   final TextEditingController subStep = TextEditingController();
-  
+
   final TextEditingController subMinutes = TextEditingController();
   final TextEditingController subHours = TextEditingController();
 }
+
 //gonna follow the same format as ingredients and make step into a class
 class StepItem {
-    final TextEditingController controller = TextEditingController();
-    final List<SubStep> subSteps = [];
+  final TextEditingController controller = TextEditingController();
+  final List<SubStep> subSteps = [];
 
-    final TextEditingController minutes = TextEditingController();
-    final TextEditingController hours = TextEditingController();
-  
+  final TextEditingController minutes = TextEditingController();
+  final TextEditingController hours = TextEditingController();
 }
 
 class AddRecipe extends StatefulWidget {
@@ -37,7 +38,7 @@ class _AddRecipeState extends State<AddRecipe> {
 
   final TextEditingController _hoursController = TextEditingController();
   final TextEditingController _minutesController = TextEditingController();
-  
+
   final _formKey = GlobalKey<FormState>();
 
   final List<Ingredient> _ingredients = [];
@@ -47,13 +48,12 @@ class _AddRecipeState extends State<AddRecipe> {
 
   @override
   void initState() {
-        // intialise 
+    // intialise
     super.initState();
 
     for (int i = 0; i < 3; i++) {
       _ingredients.add(Ingredient());
       _steps.add(StepItem());
-
     }
   }
 
@@ -69,119 +69,118 @@ class _AddRecipeState extends State<AddRecipe> {
       cont.calories.dispose();
     }
 
-    for (var cont in _steps){
-        cont.controller.dispose();
-        cont.hours.dispose();
-        cont.minutes.dispose();
+    for (var cont in _steps) {
+      cont.controller.dispose();
+      cont.hours.dispose();
+      cont.minutes.dispose();
 
-        for (var subCont in cont.subSteps){
-            subCont.subStep.dispose();
-            subCont.subMinutes.dispose();
-            subCont.subHours.dispose();
-    }
+      for (var subCont in cont.subSteps) {
+        subCont.subStep.dispose();
+        subCont.subMinutes.dispose();
+        subCont.subHours.dispose();
+      }
     }
 
     super.dispose();
   }
-    
- Widget buildDurationFields(TextEditingController hours, TextEditingController minutes){
-    
+
+  Widget buildDurationFields(
+    TextEditingController hours,
+    TextEditingController minutes,
+  ) {
     return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-                    const SizedBox(height: 20),
-                    Row(
-                    children: [
-
-                        Expanded(
-                            child: TextFormField(
-                                controller: hours,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                decoration: const InputDecoration(
-                                    labelText: "hours",
-                                    border: OutlineInputBorder(),
-                                ),
-                            )
-                        ),
-                        const SizedBox(width: 20),
-
-                        Expanded(
-                            child: TextFormField(
-                                controller: minutes,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                decoration: const InputDecoration(
-                                    labelText: "minutes",
-                                    border: OutlineInputBorder(),
-                                ),
-                            )
-                        )
-                    ],
-                )
-
-            ],
-        ); 
-} 
-    Widget buildTextInputField({
-        required TextEditingController controller, 
-        required String label,
-        TextInputType keyboardType = TextInputType.text,
-        List<TextInputFormatter> ? inputFormatters, 
-        String? Function(String?)? validator
-    }){
-        return TextFormField(
-            controller: controller,
-            keyboardType: keyboardType,
-            inputFormatters: inputFormatters,
-            decoration: InputDecoration(
-                labelText: label,
-                border: const OutlineInputBorder(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: hours,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                  labelText: "hours",
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
-            validator: validator,
-        );
-    }
-    
-Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
-    try {
-        final response = await http.post(
-            Uri.parse("http://localhost:5000/add-recipe"),  
-            headers: {
-                "Content-Type": "application/json", 
-            },
-            body: jsonEncode({ 
-                "recipe-title": name,
-                "recipe-ingredients": ingredients,
-                "recipe-steps": steps,
-                "recipe-time": time,
-                "recipe-difficulty": difficulty,
-            }),
-        );
-            print("got in func");
+            const SizedBox(width: 20),
 
-        if (response.statusCode == 200) {
-            print("hit backend ${response.body}");
-        } else {
-            print("fail ${response.statusCode}");
-        }
+            Expanded(
+              child: TextFormField(
+                controller: minutes,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                  labelText: "minutes",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildTextInputField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      validator: validator,
+    );
+  }
+
+  Future<void> _sendRecipe(name, ingredients, steps, time, difficulty) async {
+    try {
+      final response = await http.post(
+        Uri.parse("http://localhost:5000/add-recipe"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "recipe-title": name,
+          "recipe-ingredients": ingredients,
+          "recipe-steps": steps,
+          "recipe-time": time,
+          "recipe-difficulty": difficulty,
+        }),
+      );
+      print("got in func");
+
+      if (response.statusCode == 200) {
+        print("hit backend ${response.body}");
+      } else {
+        print("fail ${response.statusCode}");
+      }
     } catch (e) {
-        print("error here =>: $e");
+      print("error here =>: $e");
     }
-}
-  String _durationToISO(int hours, int minutes){
-        String result = "PT";
-        if (hours > 0){
-            result += "${hours}H";
-        }
-        if (minutes > 0){
-            result += "${minutes}M";
-        }
-        if (result == "PT"){
-            result += "0M";
-        }
-        return result;
+  }
+
+  String _durationToISO(int hours, int minutes) {
+    String result = "PT";
+    if (hours > 0) {
+      result += "${hours}H";
     }
+    if (minutes > 0) {
+      result += "${minutes}M";
+    }
+    if (result == "PT") {
+      result += "0M";
+    }
+    return result;
+  }
 
   Future<void> _saveRecipe() async {
     if (_formKey.currentState!.validate()) {
@@ -194,45 +193,44 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
 
       final ingredients = _ingredients.map((ingredient) {
         return {
-            "ingredient-name": ingredient.name.text.trim(),
-            "ingredient-amount": int.parse(ingredient.amount.text.trim()),
-            "ingredient-calories": int.parse(ingredient.calories.text.trim()),
-            "ingredient-unit": ingredient.amountUnits
+          "ingredient-name": ingredient.name.text.trim(),
+          "ingredient-amount": int.parse(ingredient.amount.text.trim()),
+          "ingredient-calories": int.parse(ingredient.calories.text.trim()),
+          "ingredient-unit": ingredient.amountUnits,
         };
       }).toList();
       final List<Map<String, dynamic>> steps = [];
 
-      for (var entry in _steps.asMap().entries){
+      for (var entry in _steps.asMap().entries) {
         int stepIndex = entry.key;
         var step = entry.value;
 
         int stepHours = int.tryParse(step.hours.text) ?? 0;
         int stepMinutes = int.tryParse(step.minutes.text) ?? 0;
 
-
         steps.add({
-            "step-index": stepIndex + 1,
-            "step-description": step.controller.text.trim(),
-            "step-duration": _durationToISO(stepHours,stepMinutes),
+          "step-index": stepIndex + 1,
+          "step-description": step.controller.text.trim(),
+          "step-duration": _durationToISO(stepHours, stepMinutes),
         });
-        for (var subEntry in step.subSteps.asMap().entries){
+        for (var subEntry in step.subSteps.asMap().entries) {
           int subIndex = subEntry.key;
           var subStep = subEntry.value;
 
           steps.add({
-              "step-index": double.parse("${stepIndex + 1}.${subIndex + 1}"),
-              "step-description": subStep.subStep.text.trim(),
-              "step-duration": _durationToISO(int.tryParse(subStep.subHours.text.trim()) ?? 0,int.tryParse(subStep.subMinutes.text.trim()) ?? 0),
-                
+            "step-index": double.parse("${stepIndex + 1}.${subIndex + 1}"),
+            "step-description": subStep.subStep.text.trim(),
+            "step-duration": _durationToISO(
+              int.tryParse(subStep.subHours.text.trim()) ?? 0,
+              int.tryParse(subStep.subMinutes.text.trim()) ?? 0,
+            ),
           });
         }
-          
       }
-
 
       final time = _durationToISO(hour, minutes);
 
-      await _sendRecipe(name, ingredients,steps,time,difficulty);
+      await _sendRecipe(name, ingredients, steps, time, difficulty);
 
       print("Name: $name");
       print("Ingredients: $ingredients");
@@ -243,8 +241,6 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
       print("${steps}");
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -264,44 +260,44 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               buildTextInputField(
                 controller: _recipeNameController,
                 label: "Recipe name:",
-                validator: (value){
-                    if (value == null || value.trim().isEmpty){
-                      return "Recipe name is required";  
-                    }                     
-                    if (value.trim().length < 3){
-                        return "Recipe name must be at least 3 characters";
-                    }
-                    return null;
-                }
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Recipe name is required";
+                  }
+                  if (value.trim().length < 3) {
+                    return "Recipe name must be at least 3 characters";
+                  }
+                  return null;
+                },
               ),
 
-              buildDurationFields(_hoursController,_minutesController),
+              buildDurationFields(_hoursController, _minutesController),
 
               const SizedBox(height: 20),
-              
+
               DropdownButtonFormField<String>(
                 initialValue: _difficultySelector,
                 decoration: const InputDecoration(
-                    labelText: "select difficulty",
-                    border: OutlineInputBorder(),
+                  labelText: "select difficulty",
+                  border: OutlineInputBorder(),
                 ),
-                items: ["easy", "medium","hard"].map((item)=>
-                    DropdownMenuItem(
-                                value:item, 
-                                child:Text(item)
-                  )
-                ).toList(),
-                onChanged: (value){
-                        setState((){
-                            _difficultySelector = value;
-                        });
-                    },
-                validator: (value){
-                        if (value == null || value.isEmpty){
-                            return "please select a difficulty";
-                        }
-                        return null;
-                    }
+                items: ["easy", "medium", "hard"]
+                    .map(
+                      (item) =>
+                          DropdownMenuItem(value: item, child: Text(item)),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _difficultySelector = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "please select a difficulty";
+                  }
+                  return null;
+                },
               ),
 
               /// Ingredients
@@ -318,83 +314,89 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
                     children: [
-                        Expanded(
-                            flex: 3,
-                            child: buildTextInputField(
-                                controller: controller.name,
-                                label: "enter and ingredient:",
-                                validator: (value){
-                                    if (value == null || value.trim().isEmpty){
-                                        return "enter a valid name";
-                                    }
-                                    return null;
-                                },
-                            ),
-                        ),
-
-                       const SizedBox(width: 20),
-
-                       Expanded(
-                        flex: 2,
+                      Expanded(
+                        flex: 3,
                         child: buildTextInputField(
-                            controller: controller.amount,
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            keyboardType: TextInputType.number,
-                            label: "enter a ingredient quantity",
-                            validator: (value){
-                                if (value == null || value.trim().isEmpty){
-                                    return "enter a valid quantity";
-                                }
-                                return null;
-                            },
+                          controller: controller.name,
+                          label: "enter and ingredient:",
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "enter a valid name";
+                            }
+                            return null;
+                          },
                         ),
                       ),
 
-                       const SizedBox(width: 20),
+                      const SizedBox(width: 20),
 
-                       Expanded(
-                        flex: 2,
-                        child: DropdownButtonFormField<String>(
-                            initialValue: controller.amountUnits,
-                            decoration: const InputDecoration(
-                                labelText: "select Units",
-                                border: OutlineInputBorder(),
-                            ),
-                        items: ["g","KG", "ml","L"].map((item)=>
-                            DropdownMenuItem(
-                                        value:item, 
-                                        child:Text(item)
-                          )
-                        ).toList(),
-                        onChanged: (value){
-                                setState((){
-                                    controller.amountUnits = value;
-                                });
-                            },
-                        validator: (value){
-                                if (value == null || value.isEmpty){
-                                    return "please select a unit";
-                                }
-                                return null;
-                            }
-                          ),
-                        ),
-
-                       const SizedBox(width: 20),
-
-                       Expanded(
+                      Expanded(
                         flex: 2,
                         child: buildTextInputField(
-                            controller: controller.calories,
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            label: "ingredient calories",
-                            validator: (value){
-                                if (value == null || value.trim().isEmpty){
-                                    return "enter a valid amount";
-                                }
+                          controller: controller.amount,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          keyboardType: TextInputType.number,
+                          label: "enter a ingredient quantity",
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "enter a valid quantity";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
 
-                                return null;
-                            },
+                      const SizedBox(width: 20),
+
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButtonFormField<String>(
+                          initialValue: controller.amountUnits,
+                          decoration: const InputDecoration(
+                            labelText: "select Units",
+                            border: OutlineInputBorder(),
+                          ),
+                          items: ["g", "KG", "ml", "L"]
+                              .map(
+                                (item) => DropdownMenuItem(
+                                  value: item,
+                                  child: Text(item),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              controller.amountUnits = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "please select a unit";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      Expanded(
+                        flex: 2,
+                        child: buildTextInputField(
+                          controller: controller.calories,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          label: "ingredient calories",
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "enter a valid amount";
+                            }
+
+                            return null;
+                          },
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -406,7 +408,7 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                     _ingredients.add(Ingredient());
+                    _ingredients.add(Ingredient());
                   });
                 },
                 child: const Text("Add Ingredient"),
@@ -426,84 +428,83 @@ Future<void> _sendRecipe(name, ingredients , steps, time, difficulty) async {
                 StepItem step = entry.value;
 
                 return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                       Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: buildTextInputField(
-                                controller: step.controller,
-                                label: " Step ${stepIndex + 1}:",
-                                validator: (value){
-                                    if (value == null || value.isEmpty){
-                                        return "please enter a valid step";
-                                    }
-                                    return null;
-                                },
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: buildTextInputField(
+                        controller: step.controller,
+                        label: " Step ${stepIndex + 1}:",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "please enter a valid step";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
+                    buildDurationFields(step.hours, step.minutes),
+
+                    const SizedBox(height: 20),
+
+                    ...step.subSteps.asMap().entries.map((subEntry) {
+                      int subIndex = subEntry.key;
+                      SubStep subStep = subEntry.value;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20, bottom: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildTextInputField(
+                              controller: subStep.subStep,
+                              label:
+                                  "Sub Step ${stepIndex + 1}.${subIndex + 1}:",
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "please enter a valid sub step";
+                                }
+                                if (value.trim().length < 3) {
+                                  return "please enter a longer sub step";
+                                }
+                                return null;
+                              },
                             ),
+
+                            buildDurationFields(
+                              subStep.subHours,
+                              subStep.subMinutes,
+                            ),
+                          ],
                         ),
-
-                        
-                     buildDurationFields(step.hours,step.minutes),
-
-                     const SizedBox(height: 20),
-                      
-                     ...step.subSteps.asMap().entries.map((subEntry){
-                        int subIndex = subEntry.key;
-                        SubStep subStep = subEntry.value;
-                        return Padding(
-                            padding: const EdgeInsets.only(left: 20, bottom: 20),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                    buildTextInputField(
-                                    controller: subStep.subStep,
-                                    label: "Sub Step ${stepIndex + 1}.${subIndex + 1}:",
-                                    validator: (value){
-                                        if (value == null || value.trim().isEmpty){
-                                            return "please enter a valid sub step";
-                                        }
-                                        if (value.trim().length < 3){
-                                            return "please enter a longer sub step";
-                                        }
-                                        return null;
-                                    }
-                                ),
-
-                                buildDurationFields(subStep.subHours,subStep.subMinutes),
-
-
-                             ],
-                            ),
-                        );
+                      );
                     }),
                     const SizedBox(height: 20),
 
-                      
                     ElevatedButton(
-                        onPressed: (){
-                            setState((){
-                            step.subSteps.add(SubStep());
-                        }); 
+                      onPressed: () {
+                        setState(() {
+                          step.subSteps.add(SubStep());
+                        });
                       },
-                        child: const Text("add sub step"),
+                      child: const Text("add sub step"),
                     ),
                     const SizedBox(height: 20),
                   ],
                 );
               }),
-        
 
               const SizedBox(height: 20),
 
               ElevatedButton(
-                    onPressed: (){
-                        setState(() {
-                            _steps.add(StepItem());
-                });
-              },
-                  child: const Text("add Step"),
-            ),
-            const SizedBox(height: 20),
+                onPressed: () {
+                  setState(() {
+                    _steps.add(StepItem());
+                  });
+                },
+                child: const Text("add Step"),
+              ),
+              const SizedBox(height: 20),
 
               Center(
                 child: ElevatedButton(

@@ -16,16 +16,20 @@ def authenticate():
     if "user_lname" not in request.form:
         abort(400)
 
+    if "user_password" not in request.form:
+        abort(400)
+
     # Use first and last names to get the user ID from the database
     user_fname = request.form['user_fname']
     user_lname = request.form['user_lname']
+    user_password = request.form['user_password']
 
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "authentication/sql/get_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname))
+            cur.execute(sql, (user_fname, user_lname,user_password))
 
         user = cur.fetchone()
 

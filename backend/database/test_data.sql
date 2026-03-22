@@ -6,6 +6,6 @@ VALUES
     ('Burger'),
     ('Hotdog');
 
-INSERT INTO user (user_fname, user_lname)
+INSERT INTO user (user_fname, user_lname,user_password)
 VALUES
-    ('Test', 'User');
+    ('Test', 'User','123456');
