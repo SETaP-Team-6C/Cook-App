@@ -1,6 +1,6 @@
 from flask.testing import FlaskClient
 
-from test.conftest import client
+from tests.conftest import client
 
 
 def test_successful(client: FlaskClient) -> None:
