@@ -1,6 +1,5 @@
 [tool.pytest]
 minversion = "9.0"
 addopts = ["-ra", "-q"]
-testpath = "tests"
 pythonpath = ["main"]
 
