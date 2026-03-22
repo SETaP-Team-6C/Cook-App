@@ -1,6 +1,6 @@
 from flask.testing import FlaskClient
 
-from conftest import client
+from tests.conftest import client
 
 
 def test_account_creation_valid(client: FlaskClient) -> None:
