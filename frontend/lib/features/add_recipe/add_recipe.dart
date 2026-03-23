@@ -209,7 +209,7 @@ class _AddRecipeState extends State<AddRecipe> {
         int stepMinutes = int.tryParse(step.minutes.text) ?? 0;
 
         steps.add({
-          "step-index": stepIndex + 1,
+          "step-index": "${stepIndex + 1}",
           "step-description": step.controller.text.trim(),
           "step-duration": _durationToISO(stepHours, stepMinutes),
         });
@@ -218,7 +218,7 @@ class _AddRecipeState extends State<AddRecipe> {
           var subStep = subEntry.value;
 
           steps.add({
-            "step-index": double.parse("${stepIndex + 1}.${subIndex + 1}"),
+            "step-index": "${double.parse("${stepIndex + 1}.${subIndex + 1}")}",
             "step-description": subStep.subStep.text.trim(),
             "step-duration": _durationToISO(
               int.tryParse(subStep.subHours.text.trim()) ?? 0,
