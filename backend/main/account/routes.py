@@ -34,7 +34,7 @@ def create_account():
         cur = con.cursor()
         with open(PROJECT_MAIN / "account/sql/create_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname))
+            cur.execute(sql, (user_fname, user_lname,user_email,user_password))
 
         user_id = cur.lastrowid
 

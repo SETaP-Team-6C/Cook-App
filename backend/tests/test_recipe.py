@@ -6,6 +6,7 @@ from tests.conftest import client
 def test_recipes(client: FlaskClient) -> None:
     response = client.get('/get-recipes')
     assert response.status_code == 200
+    assert response.json is not None
     assert response.json["recipes"] == [
         {
             'recipe_id': 1,
