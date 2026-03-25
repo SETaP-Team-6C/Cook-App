@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
-import 'package:frontend/features/authen/create_account.dart';
 import 'package:http/http.dart' as http;
+
+class User {
+  final TextEditingController _userFnameController = TextEditingController();
+  final TextEditingController _userLnameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,11 +18,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _userFnameController = TextEditingController();
-  final TextEditingController _userLnameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final User user = User();
+
+  void showMsg(BuildContext context, String msg, int time) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${msg}"),
+        duration: Duration(seconds: time),
+      ),
+    );
+  }
 
   // async func returns Future of type void is like in rust needs
-  Future<void> _sendUser(userFname, userLname, newAccount) async {
+  Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -29,44 +45,45 @@ class _LoginPageState extends State<LoginPage> {
           // removed json encode as again form backend
           "user_fname": userFname,
           "user_lname": userLname,
+          "user_password": password,
         },
       );
+      final data = jsonDecode(response.body);
+      print(data);
 
-      if (response.statusCode == 200) {
+      if (data["success"] == true) {
+        String username = "$userFname $userLname";
+
+        Navigator.pushReplacementNamed(
+          // uses named routing now instead of direct calling
+          context,
+          AppRoutes.home,
+          arguments: {"username": username, "newAccount": newAccount},
+        );
         print("yipppeee it works (hit backend) ${response.body}");
+        showMsg(context, "logged in", 2);
       } else {
-        print("fail somewhere ${response.statusCode}");
+        showMsg(context, "invalid credientials", 2);
       }
     } catch (e) {
-      print("error here =>: $e");
+      showMsg(context, "server error", 2);
     }
   }
 
   void _handleAuth(bool newAccount) async {
-    String userFname = _userFnameController.text;
-    String userLname = _userLnameController.text;
+    String userFname = user._userFnameController.text.trim();
+    String userLname = user._userLnameController.text.trim();
+    String userPassword = user._passwordController.text.trim();
 
-    if (userFname.isEmpty || userLname.isEmpty) {
-      return; // this why it needs string and "" isEmpty == true forgot abt it
-    } else {
-      await _sendUser(userFname, userLname, newAccount);
-    }
-
-    String username = "$userFname $userLname";
-
-    Navigator.pushReplacementNamed(
-      // uses named routing now instead of direct calling
-      context,
-      AppRoutes.home,
-      arguments: {"username": username, "newAccount": newAccount},
-    );
+    await _sendUser(userFname, userLname, userPassword, newAccount);
   }
 
   @override
   void dispose() {
     // clean up
-    _userFnameController.dispose();
-    _userLnameController.dispose();
+    user._userFnameController.dispose();
+    user._userLnameController.dispose();
+    user._passwordController.dispose();
     super.dispose();
   }
 
@@ -81,62 +98,95 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _userFnameController, // allows use of value
-                decoration: InputDecoration(
-                  labelText: "User first name",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller:
-                    _userLnameController, // like fields in html so need .value to get value
-                decoration: InputDecoration(
-                  labelText: "User last name",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () =>
-                    _handleAuth(false), // what happens on press func
-                child: Text("Login"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  // Push CreateAccount and await returned result (username/newAccount)
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CreateAccount()),
-                  );
-                  if (result is Map && result['username'] != null) {
-                    // If the create account screen returned a message, show it briefly
-                    if (result['message'] != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(result['message'].toString())),
-                      );
-                      // allow a short moment for the SnackBar to appear before navigating
-                      await Future.delayed(const Duration(milliseconds: 300));
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: user._userFnameController, // allows use of value
+                  decoration: InputDecoration(
+                    labelText: "User first name",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "please enter a valid name";
                     }
-
-                    Navigator.pushReplacementNamed(
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: user
+                      ._userLnameController, // like fields in html so need .value to get value
+                  decoration: InputDecoration(
+                    labelText: "User last name",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "please enter a valid name";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: user._passwordController,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "please enter a valid password";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _handleAuth(false);
+                    }
+                  },
+                  child: Text("Login"),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Push CreateAccount and await returned result (username/newAccount)
+                    final result = await Navigator.pushReplacementNamed(
                       context,
-                      AppRoutes.home,
-                      arguments: {
-                        'username': result['username'],
-                        'newAccount': result['newAccount'] ?? true,
-                      },
+                      AppRoutes.createAccount,
                     );
-                  }
-                },
-                child: const Text("Create Account"),
-              ),
-            ],
+                    if (result is Map && result['username'] != null) {
+                      // If the create account screen returned a message, show it briefly
+                      if (result['message'] != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result['message'].toString())),
+                        );
+                        // allow a short moment for the SnackBar to appear before navigating
+                        await Future.delayed(const Duration(milliseconds: 300));
+                      }
+
+                      Navigator.pushReplacementNamed(
+                        context,
+                        AppRoutes.home,
+                        arguments: {
+                          'username': result['username'],
+                          'newAccount': result['newAccount'] ?? true,
+                        },
+                      );
+                    }
+                  },
+                  child: const Text("Create Account"),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,5 @@
 SELECT
-    user_id
+    user_id, user_password
 FROM
     user
 WHERE

@@ -1,7 +1,9 @@
 CREATE TABLE user (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_fname TEXT NOT NULL,
-    user_lname TEXT NOT NULL
+    user_lname TEXT NOT NULL,
+    user_password TEXT NOT NUll,
+    user_email TEXT NOT Null
 );
 
 CREATE TABLE dietary_requirement (

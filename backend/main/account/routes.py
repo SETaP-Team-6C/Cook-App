@@ -2,6 +2,7 @@ from flask import blueprints
 from flask import request
 from flask import abort
 
+
 from main.database import Database
 from main.paths import PROJECT_MAIN
 
@@ -18,15 +19,25 @@ def create_account():
     if "user_lname" not in request.form:
         abort(400)
 
+    if "user_password" not in request.form:
+        abort(400)
+
+    if "user_email" not in request.form:
+        abort(400)
+
     user_fname = request.form['user_fname']
     user_lname = request.form['user_lname']
+    user_password = request.form['user_password']
+    user_email = request.form['user_email']
+
+
 
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "account/sql/create_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname))
+            cur.execute(sql, (user_fname, user_lname,user_email,user_password))
 
         user_id = cur.lastrowid
 

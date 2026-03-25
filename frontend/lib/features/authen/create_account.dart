@@ -40,16 +40,16 @@ class _CreateAccountState extends State<CreateAccount> {
     setState(() => _loading = true);
 
     try {
-      final uri = Uri.parse('http://localhost:5000/add-user');
+      final uri = Uri.parse('http://localhost:5000/create-account');
       final resp = await http.post(
         uri,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
           'user_fname': first,
           'user_lname': last,
-          'email': email,
-          'password': password,
-        }),
+          'user_email': email,
+          'user_password': password,
+        },
       );
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
