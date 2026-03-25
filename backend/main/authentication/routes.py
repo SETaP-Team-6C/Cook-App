@@ -41,11 +41,11 @@ def authenticate():
             return {"success": False }, 401
 
         user = dict(user)
-        print(user)
-
 
         if user["user_password"] != user_password: 
             return {"success": False} , 401
+
+        del user["user_password"]
 
     
     return {"success": True, "user": user}
