@@ -2,6 +2,7 @@ from flask import blueprints
 from flask import request
 from flask import abort
 
+
 from main.database import Database
 from main.paths import PROJECT_MAIN
 
@@ -29,16 +30,22 @@ def authenticate():
         cur = con.cursor()
         with open(PROJECT_MAIN / "authentication/sql/get_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname,user_password))
+            cur.execute(sql, (user_fname, user_lname))
 
         user = cur.fetchone()
 
 
+
         if user is None:
             # No user exists or information wrong so return not authenticated
-            return {"success": False, }, 401
+            return {"success": False }, 401
 
         user = dict(user)
+        print(user)
+
+
+        if user["user_password"] != user_password: 
+            return {"success": False} , 401
 
     
     return {"success": True, "user": user}
