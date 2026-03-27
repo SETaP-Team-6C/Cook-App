@@ -45,6 +45,30 @@ class _AddRecipeState extends State<AddRecipe> {
   final List<StepItem> _steps = [];
 
   String? _difficultySelector;
+  final List<String> _dietaryOptions = [
+    'Vegan',
+    'Vegetarian',
+    'Gluten-Free',
+    'Dairy-Free',
+    'Nut-Free',
+    'Halal',
+    'Others',
+  ];
+
+  String? _selectedDietary;
+
+  // Allergy options
+  final List<String> _allergyOptions = [
+    'Peanuts',
+    'Milk',
+    'Eggs',
+    'Wheat',
+    'Soy',
+    'Fish',
+    'Others',
+  ];
+
+  String? _selectedAllergy;
 
   @override
   void initState() {
@@ -143,7 +167,14 @@ class _AddRecipeState extends State<AddRecipe> {
     );
   }
 
-  Future<void> _sendRecipe(name, ingredients, steps, time, difficulty) async {
+  Future<void> _sendRecipe(
+    name,
+    ingredients,
+    steps,
+    time,
+    difficulty,
+    List<String> dietary,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse("http://localhost:5000/add-recipe"),
@@ -154,6 +185,7 @@ class _AddRecipeState extends State<AddRecipe> {
           "recipe-steps": steps,
           "recipe-time": time,
           "recipe-difficulty": difficulty,
+          "recipe-dietary": dietary,
         }),
       );
       print("got in func");
@@ -230,7 +262,14 @@ class _AddRecipeState extends State<AddRecipe> {
 
       final time = _durationToISO(hour, minutes);
 
-      await _sendRecipe(name, ingredients, steps, time, difficulty);
+      await _sendRecipe(
+        name,
+        ingredients,
+        steps,
+        time,
+        difficulty,
+        _selectedDietary != null ? [_selectedDietary!] : [],
+      );
 
       print("Name: $name");
       print("Ingredients: $ingredients");
@@ -299,6 +338,81 @@ class _AddRecipeState extends State<AddRecipe> {
                   return null;
                 },
               ),
+
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedDietary,
+                decoration: const InputDecoration(
+                  labelText: 'Dietary requirement',
+                  border: OutlineInputBorder(),
+                ),
+                items: _dietaryOptions
+                    .map(
+                      (opt) => DropdownMenuItem(value: opt, child: Text(opt)),
+                    )
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedDietary = val),
+                validator: (val) {
+                  return null;
+                },
+              ),
+
+              //dietary textbox
+              if (_selectedDietary == 'Others') ...[
+                const SizedBox(height: 16),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Please specify dietary requirement',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (_selectedDietary == 'Others' &&
+                        (value == null || value.trim().isEmpty)) {
+                      return 'Please specify dietary requirement';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+
+              //Allergy dropdown
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedAllergy,
+                decoration: const InputDecoration(
+                  labelText: 'Allergy requirement',
+                  border: OutlineInputBorder(),
+                ),
+                items: _allergyOptions
+                    .map(
+                      (opt) => DropdownMenuItem(value: opt, child: Text(opt)),
+                    )
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedAllergy = val),
+                validator: (val) {
+                  return null;
+                },
+              ),
+
+              //Allergy textbox
+              if (_selectedAllergy == 'Others') ...[
+                const SizedBox(height: 16),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Please specify allergy',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (_selectedAllergy == 'Others' &&
+                        (value == null || value.trim().isEmpty)) {
+                      return 'Please specify allergy';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+
+              const SizedBox(height: 20),
 
               /// Ingredients
               const Text(
