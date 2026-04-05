@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
+import 'search_page.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key, required this.username, required this.newAccount});
@@ -93,7 +94,18 @@ class _MyHomePageState extends State<HomePage> {
                                 );
                             }, 
                             child: Text("add recipe")
-                        )
+                        ),
+                        const SizedBox(height: 12), 
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SearchPage()),
+                            );
+                          },
+                          icon: const Icon(Icons.search),
+                          label: const Text("Search Recipes"),
+                        ),
                     ],
                 ),
             ),
