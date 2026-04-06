@@ -4,6 +4,7 @@ import 'package:frontend/features/recipe/home_page.dart';
 import 'package:frontend/features/authen/login_page.dart';
 import 'package:frontend/features/profile/profile_page.dart';
 import 'package:frontend/features/add_recipe/add_recipe.dart';
+import 'package:frontend/features/techniques/cooking_techniques_page.dart';
 
 
 class AppRoutes {
@@ -13,6 +14,7 @@ class AppRoutes {
     static const String profile = "/profile";
     static const String addRecipe = "/addRecipe";
     static const String createAccount = "/createAccount";
+    static const String techniques = "/techniques";
 
     //routes
     static Route<dynamic> generateRoute(RouteSettings settings){
@@ -51,6 +53,10 @@ class AppRoutes {
             case createAccount:
                 return MaterialPageRoute(
                     builder: (_) => CreateAccount()
+                );
+            case techniques:
+                return MaterialPageRoute(
+                    builder: (_) => const CookingTechniquesPage()
                 );
             default:
                 return MaterialPageRoute(

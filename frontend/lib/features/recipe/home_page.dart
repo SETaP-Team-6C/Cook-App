@@ -74,6 +74,17 @@ class _MyHomePageState extends State<HomePage> {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                        ElevatedButton.icon(
+                            onPressed: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.techniques,
+                                );
+                            },
+                            icon: const Icon(Icons.menu_book_outlined),
+                            label: const Text("cooking techniques")
+                        ),
+                        const SizedBox(height: 12),
                         ElevatedButton(
                             onPressed: () {
                                 Navigator.pushNamed(
