@@ -23,7 +23,6 @@ class RecipeService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
-      print(response.body);
       throw Exception("faile to add recipe");
     }
   }

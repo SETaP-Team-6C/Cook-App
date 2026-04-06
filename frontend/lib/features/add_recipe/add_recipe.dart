@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/core/routes.dart';
 import 'package:frontend/features/add_recipe/services/recipe_service.dart';
 
 class Ingredient {
@@ -222,19 +221,10 @@ class _AddRecipeState extends State<AddRecipe> {
           Navigator.of(context).maybePop();
         }
       } catch (e) {
-        print(e);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("recipe failed to save")));
       }
-
-      print("Name: $name");
-      print("Ingredients: $ingredients");
-      print("Steps: $steps");
-      print("${time}");
-      print("${difficulty}");
-      print("/n");
-      print("${steps}");
     }
   }
 
