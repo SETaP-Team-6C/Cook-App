@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/features/authen/services/account_services.dart';
 import 'dart:convert';
 
 class CreateAccount extends StatefulWidget {
@@ -16,6 +16,7 @@ class _CreateAccountState extends State<CreateAccount> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+  final CreateService createService = CreateService();
 
   bool _loading = false;
 
@@ -40,19 +41,14 @@ class _CreateAccountState extends State<CreateAccount> {
     setState(() => _loading = true);
 
     try {
-      final uri = Uri.parse('http://localhost:5000/create-account');
-      final resp = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'user_fname': first,
-          'user_lname': last,
-          'user_email': email,
-          'user_password': password,
-        },
+      final resp = await createService.createAccount(
+        first,
+        last,
+        email,
+        password,
       );
 
-      if (resp.statusCode == 200 || resp.statusCode == 201) {
+      if (resp["status"] == 200 || resp["status"] == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );
@@ -61,7 +57,7 @@ class _CreateAccountState extends State<CreateAccount> {
       } else {
         String msg = 'Failed to create account';
         try {
-          final body = jsonDecode(resp.body);
+          final body = jsonDecode(resp["body"]);
           if (body is Map && body['message'] != null) msg = body['message'];
         } catch (_) {}
         ScaffoldMessenger.of(
