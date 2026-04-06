@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/features/authen/services/login_servic.dart';
 
 class User {
   final TextEditingController _userFnameController = TextEditingController();
@@ -20,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final User user = User();
+  final LoginService loginService = LoginService();
 
   void showMsg(BuildContext context, String msg, int time) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -33,23 +32,11 @@ class _LoginPageState extends State<LoginPage> {
   // async func returns Future of type void is like in rust needs
   Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
-      final response = await http.post(
-        Uri.parse(
-          "http://localhost:5000/authenticate",
-        ), // need to change per create account and login :)
-        headers: {
-          "Content-Type":
-              "application/x-www-form-urlencoded", // changed as backend requests form
-        },
-        body: {
-          // removed json encode as again form backend
-          "user_fname": userFname,
-          "user_lname": userLname,
-          "user_password": password,
-        },
+      final data = await loginService.authenticate(
+        userFname,
+        userLname,
+        password,
       );
-      final data = jsonDecode(response.body);
-      print(data);
 
       if (data["success"] == true) {
         String username = "$userFname $userLname";
@@ -60,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
           AppRoutes.home,
           arguments: {"username": username, "newAccount": newAccount},
         );
-        print("yipppeee it works (hit backend) ${response.body}");
         showMsg(context, "logged in", 2);
       } else {
         showMsg(context, "invalid credientials", 2);
