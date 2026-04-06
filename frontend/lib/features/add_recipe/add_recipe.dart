@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:frontend/core/routes.dart';
+import 'package:frontend/features/add_recipe/services/recipe_service.dart';
 
 class Ingredient {
   final TextEditingController name = TextEditingController();
@@ -43,6 +43,8 @@ class _AddRecipeState extends State<AddRecipe> {
 
   final List<Ingredient> _ingredients = [];
   final List<StepItem> _steps = [];
+
+  final RecipeService recipeService = RecipeService();
 
   String? _difficultySelector;
 
@@ -143,31 +145,6 @@ class _AddRecipeState extends State<AddRecipe> {
     );
   }
 
-  Future<void> _sendRecipe(name, ingredients, steps, time, difficulty) async {
-    try {
-      final response = await http.post(
-        Uri.parse("http://localhost:5000/add-recipe"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "recipe-title": name,
-          "recipe-ingredients": ingredients,
-          "recipe-steps": steps,
-          "recipe-time": time,
-          "recipe-difficulty": difficulty,
-        }),
-      );
-      print("got in func");
-
-      if (response.statusCode == 200) {
-        print("hit backend ${response.body}");
-      } else {
-        print("fail ${response.statusCode}");
-      }
-    } catch (e) {
-      print("error here =>: $e");
-    }
-  }
-
   String _durationToISO(int hours, int minutes) {
     String result = "PT";
     if (hours > 0) {
@@ -230,7 +207,26 @@ class _AddRecipeState extends State<AddRecipe> {
 
       final time = _durationToISO(hour, minutes);
 
-      await _sendRecipe(name, ingredients, steps, time, difficulty);
+      try {
+        bool success = await recipeService.addRecipe(
+          name,
+          ingredients,
+          steps,
+          time,
+          difficulty!,
+        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("recipe saved")));
+        if (success) {
+          Navigator.of(context).maybePop();
+        }
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("recipe failed to save")));
+      }
 
       print("Name: $name");
       print("Ingredients: $ingredients");
