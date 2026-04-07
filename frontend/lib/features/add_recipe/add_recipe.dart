@@ -170,8 +170,8 @@ class _AddRecipeState extends State<AddRecipe> {
       final ingredients = _ingredients.map((ingredient) {
         return {
           "ingredient-name": ingredient.name.text.trim(),
-          "ingredient-amount": ingredient.amount.text.trim(),
-          "ingredient-calories": ingredient.calories.text.trim(),
+          "ingredient-amount": int.tryParse(ingredient.amount.text.trim()),
+          "ingredient-calories": int.tryParse(ingredient.calories.text.trim()),
           "ingredient-unit": ingredient.amountUnits,
         };
       }).toList();
