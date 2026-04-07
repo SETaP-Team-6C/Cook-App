@@ -170,8 +170,8 @@ class _AddRecipeState extends State<AddRecipe> {
       final ingredients = _ingredients.map((ingredient) {
         return {
           "ingredient-name": ingredient.name.text.trim(),
-          "ingredient-amount": int.parse(ingredient.amount.text.trim()),
-          "ingredient-calories": int.parse(ingredient.calories.text.trim()),
+          "ingredient-amount": ingredient.amount.text.trim(),
+          "ingredient-calories": ingredient.calories.text.trim(),
           "ingredient-unit": ingredient.amountUnits,
         };
       }).toList();
@@ -194,7 +194,7 @@ class _AddRecipeState extends State<AddRecipe> {
           var subStep = subEntry.value;
 
           steps.add({
-            "step-index": "${double.parse("${stepIndex + 1}.${subIndex + 1}")}",
+            "step-index": "${stepIndex + 1}.${subIndex + 1}",
             "step-description": subStep.subStep.text.trim(),
             "step-duration": _durationToISO(
               int.tryParse(subStep.subHours.text.trim()) ?? 0,
