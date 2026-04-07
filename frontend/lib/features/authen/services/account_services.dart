@@ -8,7 +8,7 @@ class ApiResponse {
 }
 
 class LoginService {
-  Future<ApiResponse> authenticate(
+  static Future<ApiResponse> authenticate(
     String fname,
     String lname,
     String password,
@@ -30,7 +30,7 @@ class LoginService {
 }
 
 class CreateService {
-  Future<ApiResponse> createAccount(
+  static Future<ApiResponse> createAccount(
     String fname,
     String lname,
     String email,

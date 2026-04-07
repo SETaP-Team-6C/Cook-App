@@ -43,8 +43,6 @@ class _AddRecipeState extends State<AddRecipe> {
   final List<Ingredient> _ingredients = [];
   final List<StepItem> _steps = [];
 
-  final RecipeService recipeService = RecipeService();
-
   String? _difficultySelector;
 
   @override
@@ -207,7 +205,7 @@ class _AddRecipeState extends State<AddRecipe> {
       final time = _durationToISO(hour, minutes);
 
       try {
-        bool success = await recipeService.addRecipe(
+        bool success = await RecipeService.addRecipe(
           name,
           ingredients,
           steps,

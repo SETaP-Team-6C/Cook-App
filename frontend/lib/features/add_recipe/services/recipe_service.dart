@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RecipeService {
-  Future<bool> addRecipe(
+  static Future<bool> addRecipe(
     String name,
     List ingredients,
     List steps,
