@@ -37,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         userLname,
         password,
       );
+      // will stop if widgets areant displayed after async
       if (!mounted) return;
 
       if (data.statusCode == 200) {
@@ -154,21 +155,26 @@ class _LoginPageState extends State<LoginPage> {
                     if (result is Map && result['username'] != null) {
                       // If the create account screen returned a message, show it briefly
                       if (result['message'] != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result['message'].toString())),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result['message'].toString()),
+                            ),
+                          );
+                        }
                         // allow a short moment for the SnackBar to appear before navigating
                         await Future.delayed(const Duration(milliseconds: 300));
                       }
-
-                      Navigator.pushReplacementNamed(
-                        context,
-                        AppRoutes.home,
-                        arguments: {
-                          'username': result['username'],
-                          'newAccount': result['newAccount'] ?? true,
-                        },
-                      );
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.home,
+                          arguments: {
+                            'username': result['username'],
+                            'newAccount': result['newAccount'] ?? true,
+                          },
+                        );
+                      }
                     }
                   },
                   child: const Text("Create Account"),
