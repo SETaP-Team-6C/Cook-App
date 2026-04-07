@@ -9,6 +9,7 @@ from main.index.routes import index_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    app.secret_key = 'SECRET-KEY'
     app.register_blueprint(recipe_bp)
     app.register_blueprint(authentication_bp)
     app.register_blueprint(index_bp)
