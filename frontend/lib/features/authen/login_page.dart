@@ -18,7 +18,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final User user = User();
-  final LoginService loginService = LoginService();
 
   void showMsg(BuildContext context, String msg, int time) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   // async func returns Future of type void is like in rust needs
   Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
-      final data = await loginService.authenticate(
+      final data = await LoginService.authenticate(
         userFname,
         userLname,
         password,

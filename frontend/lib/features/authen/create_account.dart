@@ -16,7 +16,6 @@ class _CreateAccountState extends State<CreateAccount> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
-  final CreateService createService = CreateService();
 
   bool _loading = false;
 
@@ -41,7 +40,7 @@ class _CreateAccountState extends State<CreateAccount> {
     setState(() => _loading = true);
 
     try {
-      final resp = await createService.createAccount(
+      final resp = await CreateService.createAccount(
         first,
         last,
         email,
