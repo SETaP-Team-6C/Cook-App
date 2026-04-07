@@ -37,8 +37,9 @@ class _LoginPageState extends State<LoginPage> {
         userLname,
         password,
       );
+      if (!mounted) return;
 
-      if (data["success"] == true) {
+      if (data.statusCode == 200) {
         String username = "$userFname $userLname";
 
         Navigator.pushReplacementNamed(
@@ -47,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           AppRoutes.home,
           arguments: {"username": username, "newAccount": newAccount},
         );
+
         showMsg(context, "logged in", 2);
       } else {
         showMsg(context, "invalid credientials", 2);

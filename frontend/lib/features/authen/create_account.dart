@@ -48,7 +48,8 @@ class _CreateAccountState extends State<CreateAccount> {
         password,
       );
 
-      if (resp["status"] == 200 || resp["status"] == 201) {
+      if (resp.statusCode == 200 || resp.statusCode == 201) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );
@@ -57,9 +58,10 @@ class _CreateAccountState extends State<CreateAccount> {
       } else {
         String msg = 'Failed to create account';
         try {
-          final body = jsonDecode(resp["body"]);
+          final body = jsonDecode(resp.response);
           if (body is Map && body['message'] != null) msg = body['message'];
         } catch (_) {}
+        if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(msg)));
@@ -136,8 +138,9 @@ class _CreateAccountState extends State<CreateAccount> {
                 obscureText: true,
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Confirm password';
-                  if (v != _passwordController.text)
+                  if (v != _passwordController.text) {
                     return 'Passwords do not match';
+                  }
                   return null;
                 },
               ),

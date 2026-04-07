@@ -214,6 +214,7 @@ class _AddRecipeState extends State<AddRecipe> {
           time,
           difficulty!,
         );
+        if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("recipe saved")));

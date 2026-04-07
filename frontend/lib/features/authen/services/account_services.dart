@@ -1,8 +1,14 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class ApiResponse {
+  final int statusCode;
+  final String response;
+
+  ApiResponse({required this.statusCode, required this.response});
+}
+
 class LoginService {
-  Future<Map<String, dynamic>> authenticate(
+  Future<ApiResponse> authenticate(
     String fname,
     String lname,
     String password,
@@ -16,12 +22,15 @@ class LoginService {
         "user_password": password,
       },
     );
-    return jsonDecode(response.body);
+    return ApiResponse(
+      statusCode: response.statusCode,
+      response: response.body,
+    );
   }
 }
 
 class CreateService {
-  Future<Map<String, dynamic>> createAccount(
+  Future<ApiResponse> createAccount(
     String fname,
     String lname,
     String email,
@@ -37,6 +46,9 @@ class CreateService {
         "user_password": password,
       },
     );
-    return {"status": response.statusCode, "body": jsonDecode(response.body)};
+    return ApiResponse(
+      statusCode: response.statusCode,
+      response: response.body,
+    );
   }
 }
