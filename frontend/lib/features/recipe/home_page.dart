@@ -95,10 +95,7 @@ class _MyHomePageState extends State<HomePage> {
             const SizedBox(height: 12),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SearchPage()),
-                );
+                Navigator.pushNamed(context, AppRoutes.search);
               },
               icon: const Icon(Icons.search),
               label: const Text("Search Recipes"),
