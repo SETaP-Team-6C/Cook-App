@@ -1,12 +1,13 @@
 from flask import blueprints
 from flask import request
 from flask import abort
-
+from flask import session
 
 from main.database import Database
 from main.paths import PROJECT_MAIN
 
 authentication_bp = blueprints.Blueprint('authentication', __name__)
+
 
 @authentication_bp.route('/authenticate', methods=['POST'])
 def authenticate():
@@ -34,19 +35,16 @@ def authenticate():
 
         user = cur.fetchone()
 
-
-
         if user is None:
             # No user exists or information wrong so return not authenticated
-            return {"success": False }, 401
+            return {"success": False}, 401
 
         user = dict(user)
 
-        if user["user_password"] != user_password: 
-            return {"success": False} , 401
+        if user["user_password"] != user_password:
+            return {"success": False}, 401
 
         del user["user_password"]
 
-    
+    session["user_id"] = user["user_id"]
     return {"success": True, "user": user}
-
