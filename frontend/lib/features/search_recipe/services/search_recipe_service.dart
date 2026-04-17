@@ -8,7 +8,7 @@ class ApiResponse {
 }
 
 class SearchService {
-  Future<ApiResponse> searchRecipe(String name) async {
+  static Future<ApiResponse> searchRecipe(String name) async {
     final response = await http.get(
       Uri.parse(
         "http://localhost:5000/search-recipe",
