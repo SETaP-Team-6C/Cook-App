@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
       final data = jsonDecode(apiResponse.response);
 
       setState(() {
-        results = data["todo"];
+        results = data["recipes"];
         isLoading = false;
       });
     }
@@ -52,8 +52,8 @@ class _SearchPageState extends State<SearchPage> {
               onChanged: (value) {
                 setState(() {
                   query = value;
-                  _search(value);
                 });
+                _search(value);
               },
             ),
             const SizedBox(height: 20),
@@ -80,8 +80,8 @@ class _SearchPageState extends State<SearchPage> {
         final recipe = results[index];
         return ListTile(
           leading: const Icon(Icons.food_bank),
-          title: Text(recipe["name"]),
-          subtitle: Text(recipe["ingredients"]),
+          title: Text(recipe["recipe_title"] ?? "no title"),
+          subtitle: Text(recipe["recipe_ingredients"] ?? "no title"),
         );
       },
     );

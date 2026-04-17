@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
-import 'search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.username = "guest", this.newAccount = false});
