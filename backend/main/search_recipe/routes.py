@@ -1,4 +1,3 @@
-from main.account.routes import account_bp
 from flask import blueprints
 from flask import request
 from flask import abort
@@ -16,19 +15,45 @@ def search_recipe():
     if not query:
         abort(400)
 
+    search_sql = open(PROJECT_MAIN / "search_recipe/sql/search_recipe.sql",'r').read()
+    ingredient_sql = open(PROJECT_MAIN / "search_recipe/sql/recipe_ingredients.sql",'r').read()
+    step_sql = open(PROJECT_MAIN / "search_recipe/sql/recipe_steps.sql",'r').read()
+
     db = Database()
 
     with db.get_connection() as con:
         cur = con.cursor()
-        with open(PROJECT_MAIN / "search_recipe/sql/search_recipe.sql",'r') as sql_file:
-           sql = sql_file.read() 
-           cur.execute(sql,(f"%{query}%",))
+        cur.execute(search_sql,(f"%{query}%",))
 
-        data = cur.fetchall()
+        recipe_rows = cur.fetchall()
 
-    recipes = []
-    for row in data:
-        recipes.append(dict(row))
+        recipes = []
+
+        for recipe in recipe_rows:
+            recipe_dict = dict(recipe)
+            recipe_id = recipe["recipe_id"]
+
+            cur.execute(ingredient_sql, (recipe_id,))
+
+            ingredient_rows = cur.fetchall()
+            ingredients = []
+
+            for ingredient in ingredient_rows:
+                ingredients.append(dict(ingredient))
+
+            cur.execute(step_sql, (recipe_id,))
+
+            step_rows = cur.fetchall()
+            steps = []
+
+            for step in step_rows:
+                steps.append(dict(step))
+
+            recipe_dict["ingredients"] = ingredients
+            recipe_dict["steps"] = steps
+
+
+            recipes.append(recipe_dict)
 
     return {"recipes": recipes}
 

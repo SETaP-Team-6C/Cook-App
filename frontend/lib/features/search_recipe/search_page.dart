@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/add_recipe/add_recipe.dart';
 import 'dart:convert';
 import 'services/search_recipe_service.dart';
 
@@ -30,6 +31,7 @@ class _SearchPageState extends State<SearchPage> {
 
       setState(() {
         results = data["recipes"];
+        print(results);
         isLoading = false;
       });
     }
@@ -78,10 +80,14 @@ class _SearchPageState extends State<SearchPage> {
       itemCount: results.length,
       itemBuilder: (context, index) {
         final recipe = results[index];
+        final ingredients = recipe["ingredients"] as List;
+        final ingredient_names = ingredients
+            .map((i) => i["recipe_ingredient_name"])
+            .join(", ");
         return ListTile(
           leading: const Icon(Icons.food_bank),
           title: Text(recipe["recipe_title"] ?? "no title"),
-          subtitle: Text(recipe["recipe_ingredients"] ?? "no title"),
+          subtitle: Text(ingredient_names ?? "no title"),
         );
       },
     );

@@ -15,6 +15,7 @@ class AppRoutes {
   static const String createAccount = "/createAccount";
   static const String techniques = "/techniques";
   static const String search = "/search";
+  static const String viewRecipe = "/view-recipe";
 
   //routes
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -44,14 +45,22 @@ class AppRoutes {
             newAccount: args["newAccount"],
           ),
         );
+
       case addRecipe:
         return MaterialPageRoute(builder: (_) => AddRecipe());
+
       case createAccount:
         return MaterialPageRoute(builder: (_) => CreateAccount());
+
       case techniques:
         return MaterialPageRoute(builder: (_) => const CookingTechniquesPage());
+
       case search:
         return MaterialPageRoute(builder: (_) => const SearchPage());
+
+      case viewRecipe:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+
       default:
         return MaterialPageRoute(
           builder: (_) =>
