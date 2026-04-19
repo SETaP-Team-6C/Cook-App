@@ -17,7 +17,6 @@ def search_recipe():
 
     search_sql = open(PROJECT_MAIN / "search_recipe/sql/search_recipe.sql",'r').read()
     ingredient_sql = open(PROJECT_MAIN / "search_recipe/sql/recipe_ingredients.sql",'r').read()
-    step_sql = open(PROJECT_MAIN / "search_recipe/sql/recipe_steps.sql",'r').read()
 
     db = Database()
 
@@ -41,16 +40,8 @@ def search_recipe():
             for ingredient in ingredient_rows:
                 ingredients.append(dict(ingredient))
 
-            cur.execute(step_sql, (recipe_id,))
-
-            step_rows = cur.fetchall()
-            steps = []
-
-            for step in step_rows:
-                steps.append(dict(step))
 
             recipe_dict["ingredients"] = ingredients
-            recipe_dict["steps"] = steps
 
 
             recipes.append(recipe_dict)

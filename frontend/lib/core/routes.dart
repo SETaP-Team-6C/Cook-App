@@ -6,6 +6,7 @@ import 'package:frontend/features/profile/profile_page.dart';
 import 'package:frontend/features/add_recipe/add_recipe.dart';
 import 'package:frontend/features/search_recipe/search_page.dart';
 import 'package:frontend/features/techniques/cooking_techniques_page.dart';
+import 'package:frontend/features/view_recipe/view_recipe.dart';
 
 class AppRoutes {
   static const String login = "/login";
@@ -59,7 +60,7 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SearchPage());
 
       case viewRecipe:
-        return MaterialPageRoute(builder: (_) => const SearchPage());
+        return MaterialPageRoute(builder: (_) => const RecipePage());
 
       default:
         return MaterialPageRoute(

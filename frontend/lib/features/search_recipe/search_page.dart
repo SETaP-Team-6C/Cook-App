@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/add_recipe/add_recipe.dart';
+import 'package:frontend/core/routes.dart';
 import 'dart:convert';
 import 'services/search_recipe_service.dart';
 
@@ -87,7 +87,17 @@ class _SearchPageState extends State<SearchPage> {
         return ListTile(
           leading: const Icon(Icons.food_bank),
           title: Text(recipe["recipe_title"] ?? "no title"),
-          subtitle: Text(ingredient_names ?? "no title"),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Ingredients: $ingredient_names"),
+              Text("Time: ${recipe["recipe_time"]}"),
+              Text("Difficulty: ${recipe["recipe_difficulty"]}"),
+            ],
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.viewRecipe);
+          },
         );
       },
     );
