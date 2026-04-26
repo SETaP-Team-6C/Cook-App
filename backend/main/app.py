@@ -10,13 +10,13 @@ from main.index.routes import index_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
-<<<<<<< HEAD
+
     # Enable CORS for local development so the frontend (web) can call the API
     # Restrict origins in production as needed.
     CORS(app)
-=======
+
     app.secret_key = 'SECRET-KEY'
->>>>>>> main
+
     app.register_blueprint(recipe_bp)
     app.register_blueprint(authentication_bp)
     app.register_blueprint(index_bp)

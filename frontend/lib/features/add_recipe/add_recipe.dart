@@ -55,6 +55,7 @@ class _AddRecipeState extends State<AddRecipe> {
   ];
 
   String? _selectedDietary;
+  final TextEditingController _otherDietaryController = TextEditingController();
 
   // Allergy options
   final List<String> _allergyOptions = [
@@ -68,6 +69,7 @@ class _AddRecipeState extends State<AddRecipe> {
   ];
 
   String? _selectedAllergy;
+  final TextEditingController _otherAllergyController = TextEditingController();
 
   @override
   void initState() {
@@ -85,6 +87,8 @@ class _AddRecipeState extends State<AddRecipe> {
     _recipeNameController.dispose();
     _hoursController.dispose();
     _minutesController.dispose();
+    _otherDietaryController.dispose();
+    _otherAllergyController.dispose();
 
     for (var cont in _ingredients) {
       cont.name.dispose();
@@ -237,12 +241,35 @@ class _AddRecipeState extends State<AddRecipe> {
       print("${steps}");
 
       try {
+        // build dietary/allergy payloads (include 'Others' text if provided)
+        final List<String> dietaryPayload = [];
+        if (_selectedDietary != null) {
+          if (_selectedDietary == 'Others') {
+            final other = _otherDietaryController.text.trim();
+            if (other.isNotEmpty) dietaryPayload.add(other);
+          } else {
+            dietaryPayload.add(_selectedDietary!);
+          }
+        }
+
+        final List<String> allergyPayload = [];
+        if (_selectedAllergy != null) {
+          if (_selectedAllergy == 'Others') {
+            final other = _otherAllergyController.text.trim();
+            if (other.isNotEmpty) allergyPayload.add(other);
+          } else {
+            allergyPayload.add(_selectedAllergy!);
+          }
+        }
+
         bool success = await RecipeService.addRecipe(
           name,
           ingredients,
           steps,
           time,
           difficulty!,
+          dietaryPayload,
+          allergyPayload,
         );
         if (!mounted) return;
         ScaffoldMessenger.of(
@@ -339,6 +366,7 @@ class _AddRecipeState extends State<AddRecipe> {
               if (_selectedDietary == 'Others') ...[
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _otherDietaryController,
                   decoration: const InputDecoration(
                     labelText: 'Please specify dietary requirement',
                     border: OutlineInputBorder(),
@@ -376,6 +404,7 @@ class _AddRecipeState extends State<AddRecipe> {
               if (_selectedAllergy == 'Others') ...[
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _otherAllergyController,
                   decoration: const InputDecoration(
                     labelText: 'Please specify allergy',
                     border: OutlineInputBorder(),
