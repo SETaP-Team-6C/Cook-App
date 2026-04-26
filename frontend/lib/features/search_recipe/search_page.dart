@@ -81,7 +81,7 @@ class _SearchPageState extends State<SearchPage> {
       itemBuilder: (context, index) {
         final recipe = results[index];
         final ingredients = recipe["ingredients"] as List;
-        final ingredient_names = ingredients
+        final ingredientNames = ingredients
             .map((i) => i["recipe_ingredient_name"])
             .join(", ");
         return ListTile(
@@ -90,13 +90,17 @@ class _SearchPageState extends State<SearchPage> {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Ingredients: $ingredient_names"),
+              Text("Ingredients: $ingredientNames"),
               Text("Time: ${recipe["recipe_time"]}"),
               Text("Difficulty: ${recipe["recipe_difficulty"]}"),
             ],
           ),
           onTap: () {
-            Navigator.pushNamed(context, AppRoutes.viewRecipe);
+            Navigator.pushNamed(
+              context,
+              AppRoutes.viewRecipe,
+              arguments: {"recipeId": recipe["recipe_id"]},
+            );
           },
         );
       },

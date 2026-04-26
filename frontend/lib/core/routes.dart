@@ -60,7 +60,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SearchPage());
 
       case viewRecipe:
-        return MaterialPageRoute(builder: (_) => const RecipePage());
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => RecipePage(recipeId: args["recipeId"]),
+        );
 
       default:
         return MaterialPageRoute(

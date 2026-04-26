@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RecipePage extends StatefulWidget {
-  const RecipePage({super.key});
+  final int recipeId;
+  const RecipePage({super.key, required this.recipeId});
 
   @override
   State<RecipePage> createState() => _RecipePageState();
