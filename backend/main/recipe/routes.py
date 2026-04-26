@@ -2,6 +2,7 @@ from flask import blueprints
 from flask import request
 from flask import abort
 from flask import Response
+from flask import session
 
 from main.database import Database
 from main.paths import PROJECT_MAIN
@@ -31,6 +32,10 @@ def get_recipes():
 
 @recipe_bp.route('/add-recipe', methods=['POST'])
 def add_recipe():
+    #check if user is authenticated, todo: put user_id into the db
+    if session.get("user_id", None) is not None:
+        abort(401)
+
     # We are using content-type: application/json for this endpoint!
     response = Response()
     response.headers['Accept'] = 'application/json'
