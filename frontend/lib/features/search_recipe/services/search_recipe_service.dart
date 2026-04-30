@@ -1,11 +1,5 @@
 import 'package:http/http.dart' as http;
-
-class ApiResponse {
-  final int statusCode;
-  final String response;
-
-  ApiResponse({required this.statusCode, required this.response});
-}
+import 'package:frontend/core/api_response.dart';
 
 class SearchService {
   static Future<ApiResponse> searchRecipe(String name) async {
