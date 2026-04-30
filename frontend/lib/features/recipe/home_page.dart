@@ -91,6 +91,14 @@ class _MyHomePageState extends State<HomePage> {
               },
               child: Text("add recipe"),
             ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.search);
+              },
+              icon: const Icon(Icons.search),
+              label: const Text("Search Recipes"),
+            ),
           ],
         ),
       ),

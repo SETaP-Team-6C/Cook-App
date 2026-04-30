@@ -91,9 +91,7 @@ class CookingTechniquesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cooking Techniques'),
-      ),
+      appBar: AppBar(title: const Text('Cooking Techniques')),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -169,16 +167,12 @@ class _TechniqueCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: technique.accent.withValues(alpha: 0.25),
-          ),
+          border: Border.all(color: technique.accent.withValues(alpha: 0.25)),
           color: Colors.white,
         ),
         child: Column(
@@ -281,12 +275,7 @@ class _MetaRow extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              color: Color(0xFF323F4B),
-            ),
-          ),
+          child: Text(value, style: const TextStyle(color: Color(0xFF323F4B))),
         ),
       ],
     );

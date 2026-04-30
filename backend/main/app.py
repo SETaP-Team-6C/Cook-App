@@ -1,3 +1,4 @@
+from main.search_recipe.routes import search_bp
 from flask import Flask
 
 from main.account.routes import account_bp
@@ -14,6 +15,7 @@ def create_app() -> Flask:
     app.register_blueprint(authentication_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(account_bp)
+    app.register_blueprint(search_bp)
     Database()
 
     return app
