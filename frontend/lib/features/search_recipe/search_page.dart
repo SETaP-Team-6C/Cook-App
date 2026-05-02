@@ -31,7 +31,6 @@ class _SearchPageState extends State<SearchPage> {
 
       setState(() {
         results = data["recipes"];
-        print(results);
         isLoading = false;
       });
     }

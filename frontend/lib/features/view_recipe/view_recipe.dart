@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/features/view_recipe/services/service_view_recipe.dart';
 
 class RecipePage extends StatefulWidget {
   final int recipeId;
@@ -9,11 +12,16 @@ class RecipePage extends StatefulWidget {
 }
 
 class _RecipePageState extends State<RecipePage> {
-  // test data
+  String recipeTitle = "";
+  String? recipeTime;
+  String? recipeDifficulty;
+
   List<Map<String, dynamic>> steps = [];
   Set<int> completedSteps = {};
 
   int? currentStepId;
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -24,34 +32,55 @@ class _RecipePageState extends State<RecipePage> {
   Future<void> loadRecipe() async {
     // todo make fetch req i will need to make api response gonna put that class in core and use it ther
     // flake data
-    steps = [
-      {"id": 1, "text": "preheat onven"},
-      {"id": 2, "text": "preheat onven2"},
-      {"id": 3, "text": "preheat onven3"},
-    ];
-    completedSteps = {1};
+    final response = await ViewService.viewRecipe(widget.recipeId.toString());
 
+    if (response.statusCode != 200) {
+      setState(() {
+        isLoading = false;
+      });
+      // faile
+      return;
+    }
+
+    final data = jsonDecode(response.response);
+
+    recipeTitle = data["recipe_title"];
+    recipeTime = data["recipe_time"];
+    recipeDifficulty = data["recipe_difficulty"];
+
+    final fetchedSteps = data["steps"] ?? [];
+
+    steps = [];
+
+    for (final step in fetchedSteps) {
+      steps.add({
+        "id": step["recipe_step_id"],
+        "text": step["recipe_step_description"],
+        "duration": step["recipe_step_duration"],
+      });
+    }
+
+    final fetchedCompleted = data["completed_steps"] ?? [];
+    completedSteps = {};
+
+    for (final id in fetchedCompleted) {
+      completedSteps.add(id);
+    }
     setState(() {
-      currentStepId = steps.firstWhere(
-        (s) => !completedSteps.contains(s["id"]),
-      )["id"];
+      final remaining = steps.where((s) => !completedSteps.contains(s["id"]));
+      currentStepId = remaining.isEmpty ? null : remaining.first["id"];
+      isLoading = false;
     });
   }
 
   Map<String, dynamic> get currentStep =>
       steps.firstWhere((s) => s["id"] == currentStepId);
 
-  void completedstep() {
+  void completedStep() {
     setState(() {
       completedSteps.add(currentStepId!);
-      //todo
-      //change db
       final next = steps.where((s) => !completedSteps.contains(s["id"]));
-      if (next.isEmpty) {
-        currentStepId = null; //complete
-      } else {
-        currentStepId = next.first["id"];
-      }
+      currentStepId = next.isEmpty ? null : next.first["id"];
     });
   }
 
@@ -71,6 +100,13 @@ class _RecipePageState extends State<RecipePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("loading")),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     if (currentStepId == null) {
       return Scaffold(
         appBar: AppBar(title: const Text("test recipe")),
@@ -78,7 +114,16 @@ class _RecipePageState extends State<RecipePage> {
       );
     }
     return Scaffold(
-      appBar: AppBar(title: const Text("recipe page test")),
+      appBar: AppBar(
+        title: Text(recipeTitle),
+        actions: [
+          if (recipeTime != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(child: Text(recipeTime!)),
+            ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -88,7 +133,14 @@ class _RecipePageState extends State<RecipePage> {
 
             const SizedBox(height: 20),
 
-            Text("Step ${currentStep["id"]}"),
+            Text(
+              "Step ${steps.indexWhere((s) => s["id"] == currentStepId) + 1} of ${steps.length}",
+            ),
+
+            if (recipeDifficulty != null) ...[
+              const SizedBox(height: 10),
+              Text("difficulty: $recipeDifficulty"),
+            ],
 
             const SizedBox(height: 20),
 
@@ -98,10 +150,15 @@ class _RecipePageState extends State<RecipePage> {
               style: const TextStyle(fontSize: 20),
             ),
 
+            if (currentStep["duration"] != null) ...[
+              const SizedBox(height: 20),
+              Text("${currentStep["duration"]}"),
+            ],
+
             const Spacer(),
 
             ElevatedButton(
-              onPressed: completedstep,
+              onPressed: completedStep,
               child: const Text("complete step"),
             ),
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
+import 'package:frontend/core/session.dart';
 import 'package:frontend/features/authen/services/account_services.dart';
+import 'dart:convert';
 
 class User {
   final TextEditingController _userFnameController = TextEditingController();
@@ -36,11 +38,14 @@ class _LoginPageState extends State<LoginPage> {
         userLname,
         password,
       );
+      final json_resp = jsonDecode(data.response);
       // will stop if widgets areant displayed after async
       if (!mounted) return;
 
       if (data.statusCode == 200) {
         String username = "$userFname $userLname";
+        Session.userId = json_resp["user"]["user_id"];
+        print(Session.userId);
 
         Navigator.pushReplacementNamed(
           // uses named routing now instead of direct calling
@@ -54,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         showMsg(context, "invalid credientials", 2);
       }
     } catch (e) {
+      print(e);
       showMsg(context, "server error", 2);
     }
   }
