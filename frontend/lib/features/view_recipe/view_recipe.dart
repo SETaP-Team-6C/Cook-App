@@ -30,8 +30,6 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   Future<void> loadRecipe() async {
-    // todo make fetch req i will need to make api response gonna put that class in core and use it ther
-    // flake data
     final response = await ViewService.viewRecipe(widget.recipeId.toString());
 
     if (response.statusCode != 200) {
@@ -76,26 +74,49 @@ class _RecipePageState extends State<RecipePage> {
   Map<String, dynamic> get currentStep =>
       steps.firstWhere((s) => s["id"] == currentStepId);
 
-  void completedStep() {
+  Future<void> completedStep() async {
+    if (currentStepId == null) return;
+    final stepToComplete = currentStepId;
+
     setState(() {
       completedSteps.add(currentStepId!);
       final next = steps.where((s) => !completedSteps.contains(s["id"]));
       currentStepId = next.isEmpty ? null : next.first["id"];
     });
+    try {
+      final response = await ViewService.completeStep(stepToComplete!);
+      if (response.statusCode != 200) {
+        debugPrint("good");
+      }
+    } catch (e) {
+      // for error
+      debugPrint("error $e");
+    }
   }
 
   double get progress =>
       steps.isEmpty ? 0 : completedSteps.length / steps.length;
 
-  void goBack() {
+  Future<void> goBack() async {
     final completedList = completedSteps.toList();
     if (completedList.isEmpty) {
       return;
     }
+    final stepToUncomplete = completedList.last;
     setState(() {
       currentStepId = completedList.last;
       completedSteps.remove(currentStepId);
     });
+
+    try {
+      final response = await ViewService.unCompleteStep(stepToUncomplete);
+      if (response.statusCode != 200) {
+        debugPrint("good");
+      }
+    } catch (e) {
+      // could in future change to undo change to more accureatly show state of db id fails
+      debugPrint("error $e");
+    }
   }
 
   @override
