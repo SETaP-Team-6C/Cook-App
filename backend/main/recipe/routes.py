@@ -33,7 +33,7 @@ def get_recipes():
 def add_recipe():
     #check if user is authenticated, todo: put user_id into the db
     #if session.get("user_id", None) is None:
-     #   abort(401)
+    #    abort(401)
 
     # We are using content-type: application/json for this endpoint!
     response = Response()

@@ -12,7 +12,10 @@ def app() -> Flask:
         "TESTING": True,
     })
 
-    yield app
+    Database.delete_test_database()
+    Database(app)
+
+    return app
 
 @fixture
 def client(app: Flask) -> FlaskClient:
@@ -23,4 +26,5 @@ def clean_up():
     yield
 
     Database.delete_test_database()
+
 
