@@ -1,4 +1,4 @@
-from flask import blueprints
+from flask import blueprints, current_app
 from flask import request
 from flask import abort
 
@@ -10,8 +10,7 @@ view_recipe_bp = blueprints.Blueprint('view-recipe', __name__)
 
 @view_recipe_bp.route('/view-recipe/<int:recipe_id>', methods=['GET'])
 def view_recipe(recipe_id):
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
 
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe.sql") as sql_file:
@@ -57,8 +56,7 @@ def complete_step():
     if recipe_step_id is None or user_id is None:
         abort(400)
 
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "view_recipe/sql/complete_step.sql", 'r') as sql_file:
             sql = sql_file.read()
@@ -78,8 +76,7 @@ def uncomplete_step():
     if recipe_step_id is None or user_id is None:
         abort(400)
 
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "view_recipe/sql/uncomplete_step.sql", 'r') as sql_file:
             sql = sql_file.read()
