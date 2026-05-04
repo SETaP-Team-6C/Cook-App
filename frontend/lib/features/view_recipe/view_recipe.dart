@@ -52,7 +52,7 @@ class _RecipePageState extends State<RecipePage> {
 
     for (final step in fetchedSteps) {
       steps.add({
-        "id": int.parse(step["step-index"].toString()),
+        "id": int.parse(step["recipe-step-id"].toString()),
         "text": step["step-description"] ?? "",
         "duration": step["step-duration"],
         "completed": step["step-completion"] ?? false,

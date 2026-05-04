@@ -1,4 +1,5 @@
 SELECT
+    rs.recipe_step_id AS "recipe-step-id",
     rs.recipe_step_description AS "step-description",
     rs.recipe_step_duration AS "step-duration",
     rs.recipe_step_index as "step-index",
