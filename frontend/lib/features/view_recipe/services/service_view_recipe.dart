@@ -7,12 +7,9 @@ import 'package:http/http.dart' as http;
 class ViewService {
   static Future<ApiResponse> viewRecipe(String recipeId) async {
     final response = await http.get(
-      Uri.parse("http://localhost:5000/view-recipe").replace(
-        queryParameters: {
-          "recipe_id": recipeId,
-          "user_id": Session.userId.toString(),
-        },
-      ),
+      Uri.parse(
+        "http://localhost:5000/view-recipe/$recipeId",
+      ).replace(queryParameters: {"user_id": Session.userId.toString()}),
     );
     return ApiResponse(
       statusCode: response.statusCode,

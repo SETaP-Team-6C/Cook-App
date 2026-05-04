@@ -42,28 +42,30 @@ class _RecipePageState extends State<RecipePage> {
 
     final data = jsonDecode(response.response);
 
-    recipeTitle = data["recipe_title"];
-    recipeTime = data["recipe_time"];
-    recipeDifficulty = data["recipe_difficulty"];
+    recipeTitle = data["recipe-title"] ?? "";
+    recipeTime = data["recipe-time"]?.toString();
+    recipeDifficulty = data["recipe-difficulty"]?.toString();
 
-    final fetchedSteps = data["steps"] ?? [];
+    final fetchedSteps = data["recipe-steps"] ?? [];
 
     steps = [];
 
     for (final step in fetchedSteps) {
       steps.add({
-        "id": step["recipe_step_id"],
-        "text": step["recipe_step_description"],
-        "duration": step["recipe_step_duration"],
+        "id": int.parse(step["step-index"].toString()),
+        "text": step["step-description"] ?? "",
+        "duration": step["step-duration"],
+        "completed": step["step-completion"] ?? false,
       });
     }
-
-    final fetchedCompleted = data["completed_steps"] ?? [];
     completedSteps = {};
 
-    for (final id in fetchedCompleted) {
-      completedSteps.add(id);
+    for (final step in steps) {
+      if (step["completed"] == true) {
+        completedSteps.add(step["id"]);
+      }
     }
+
     setState(() {
       final remaining = steps.where((s) => !completedSteps.contains(s["id"]));
       currentStepId = remaining.isEmpty ? null : remaining.first["id"];
