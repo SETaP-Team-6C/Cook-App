@@ -1,4 +1,4 @@
-from flask import blueprints
+from flask import blueprints, current_app
 from flask import request
 from flask import abort
 
@@ -19,9 +19,7 @@ def search_recipe():
         abort(400)
 
 
-    db = Database()
-
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         cur.execute(SEARCH_SQL,(f"%{query}%",))
 

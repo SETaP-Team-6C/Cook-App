@@ -1,4 +1,4 @@
-from flask import blueprints
+from flask import blueprints, current_app
 from flask import request
 from flask import abort
 from flask import session
@@ -26,8 +26,7 @@ def authenticate():
     user_lname = request.form['user_lname']
     user_password = request.form['user_password']
 
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "authentication/sql/get_user.sql", 'r') as sql_file:
             sql = sql_file.read()

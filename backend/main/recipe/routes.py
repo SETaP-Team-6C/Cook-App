@@ -1,4 +1,4 @@
-from flask import blueprints
+from flask import blueprints, current_app
 from flask import request
 from flask import abort
 from flask import Response
@@ -12,8 +12,7 @@ recipe_bp = blueprints.Blueprint('recipes', __name__)
 
 @recipe_bp.route('/get-recipes')
 def get_recipes():
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "recipe/sql/get_recipes.sql", 'r') as sql_file:
             sql = sql_file.read()
@@ -99,8 +98,7 @@ def add_recipe():
         if "step-index" not in step:
             abort(400)
 
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "recipe/sql/add_recipe.sql", 'r') as sql_file:
             sql = sql_file.read()
