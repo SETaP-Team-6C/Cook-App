@@ -66,11 +66,13 @@ def test_view_recipe(client):
             "recipe-title": "Test Recipe",
             "recipe-steps": [
                 {
+                    "step-completion": False,
                     "step-description": "Step 1",
                     "step-duration": "PT30M",
                     "step-index": "1"
                 },
                 {
+                    "step-completion": False,
                     "step-description": "Step 2",
                     "step-duration": "PT45M",
                     "step-index": "2"

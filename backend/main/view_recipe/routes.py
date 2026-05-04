@@ -5,9 +5,10 @@ from flask import abort
 from main.database import Database
 from main.paths import PROJECT_MAIN
 
-view_recipe_bp = blueprints.Blueprint('view-recipe',__name__)
+view_recipe_bp = blueprints.Blueprint('view-recipe', __name__)
 
-@view_recipe_bp.route('/view-recipe/<int:recipe_id>',methods=['GET'])
+
+@view_recipe_bp.route('/view-recipe/<int:recipe_id>', methods=['GET'])
 def view_recipe(recipe_id):
     db = Database()
     with db.get_connection() as con:
@@ -37,16 +38,18 @@ def view_recipe(recipe_id):
 
         steps = []
         for row in step_data:
-            steps.append(dict(row))
+            row_data = dict(row)
+            row_data["step-completion"] = bool(row_data["step-completion"])
+            steps.append(row_data)
 
         recipe["recipe-ingredients"] = ingredients
         recipe["recipe-steps"] = steps
 
         return recipe
 
-@view_recipe_bp.route('/complete-step',methods=["POST"])
+
+@view_recipe_bp.route('/complete-step', methods=["POST"])
 def complete_step():
-
     data = request.get_json()
     recipe_step_id = data.get("recipe_step_id")
     user_id = data.get("user_id")
@@ -57,18 +60,17 @@ def complete_step():
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
-        with open(PROJECT_MAIN / "view_recipe/sql/complete_step.sql",'r') as sql_file:
+        with open(PROJECT_MAIN / "view_recipe/sql/complete_step.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql,(recipe_step_id,user_id))
+            cur.execute(sql, (recipe_step_id, user_id))
 
             con.commit()
 
-    return {"success": True},200
+    return {"success": True}, 200
 
 
-@view_recipe_bp.route('/uncomplete-step',methods=["POST"])
+@view_recipe_bp.route('/uncomplete-step', methods=["POST"])
 def uncomplete_step():
-
     data = request.get_json()
     recipe_step_id = data.get("recipe_step_id")
     user_id = data.get("user_id")
@@ -79,12 +81,10 @@ def uncomplete_step():
     db = Database()
     with db.get_connection() as con:
         cur = con.cursor()
-        with open(PROJECT_MAIN / "view_recipe/sql/uncomplete_step.sql",'r') as sql_file:
+        with open(PROJECT_MAIN / "view_recipe/sql/uncomplete_step.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql,(recipe_step_id,user_id))
+            cur.execute(sql, (recipe_step_id, user_id))
 
             con.commit()
 
-    return {"success": True},200
-
-
+    return {"success": True}, 200
