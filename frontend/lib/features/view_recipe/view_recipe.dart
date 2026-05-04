@@ -41,6 +41,7 @@ class _RecipePageState extends State<RecipePage> {
     }
 
     final data = jsonDecode(response.response);
+    print(data);
 
     recipeTitle = data["recipe-title"] ?? "";
     recipeTime = data["recipe-time"]?.toString();

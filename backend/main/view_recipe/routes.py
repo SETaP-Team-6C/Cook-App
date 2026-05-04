@@ -10,6 +10,7 @@ view_recipe_bp = blueprints.Blueprint('view-recipe', __name__)
 
 @view_recipe_bp.route('/view-recipe/<int:recipe_id>', methods=['GET'])
 def view_recipe(recipe_id):
+    user_id = request.args.get("user_id")
     with Database(current_app) as con:
         cur = con.cursor()
 
@@ -19,7 +20,8 @@ def view_recipe(recipe_id):
             recipe = dict(cur.fetchone())
 
         if len(recipe) == 0:
-            return "", 404
+            return "",404
+
 
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe_ingredients.sql") as sql_file:
             sql = sql_file.read()
@@ -32,7 +34,7 @@ def view_recipe(recipe_id):
 
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe_steps.sql") as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (recipe_id,))
+            cur.execute(sql, (recipe_id,user_id))
             step_data = cur.fetchall()
 
         steps = []

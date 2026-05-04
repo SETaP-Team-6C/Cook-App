@@ -32,8 +32,8 @@ def get_recipes():
 @recipe_bp.route('/add-recipe', methods=['POST'])
 def add_recipe():
     #check if user is authenticated, todo: put user_id into the db
-    if session.get("user_id", None) is None:
-        abort(401)
+    #if session.get("user_id", None) is None:
+     #   abort(401)
 
     # We are using content-type: application/json for this endpoint!
     response = Response()
@@ -125,5 +125,6 @@ def add_recipe():
             with open(PROJECT_MAIN / "recipe/sql/add_step.sql", 'r') as sql_file:
                 sql = sql_file.read()
                 cur.execute(sql, (new_recipe_id, step_index, step_description, step_duration))
+        con.commit()
 
     return {"recipe-id": new_recipe_id}, 201
