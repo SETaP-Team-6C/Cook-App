@@ -113,7 +113,6 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: colorScheme.inversePrimary,
         title: const Text('Account Management'),
         actions: [
