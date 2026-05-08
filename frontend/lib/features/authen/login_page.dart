@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/core/session.dart';
+import 'package:frontend/features/authen/services/account_services.dart';
+import 'dart:convert';
 
 class User {
   final TextEditingController _userFnameController = TextEditingController();
@@ -33,26 +33,19 @@ class _LoginPageState extends State<LoginPage> {
   // async func returns Future of type void is like in rust needs
   Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
-      final response = await http.post(
-        Uri.parse(
-          "http://localhost:5000/authenticate",
-        ), // need to change per create account and login :)
-        headers: {
-          "Content-Type":
-              "application/x-www-form-urlencoded", // changed as backend requests form
-        },
-        body: {
-          // removed json encode as again form backend
-          "user_fname": userFname,
-          "user_lname": userLname,
-          "user_password": password,
-        },
+      final data = await LoginService.authenticate(
+        userFname,
+        userLname,
+        password,
       );
-      final data = jsonDecode(response.body);
-      print(data);
+      final json_resp = jsonDecode(data.response);
+      // will stop if widgets areant displayed after async
+      if (!mounted) return;
 
-      if (data["success"] == true) {
+      if (data.statusCode == 200) {
         String username = "$userFname $userLname";
+        Session.userId = json_resp["user"]["user_id"];
+        print(Session.userId);
 
         Navigator.pushReplacementNamed(
           // uses named routing now instead of direct calling
@@ -60,12 +53,13 @@ class _LoginPageState extends State<LoginPage> {
           AppRoutes.home,
           arguments: {"username": username, "newAccount": newAccount},
         );
-        print("yipppeee it works (hit backend) ${response.body}");
+
         showMsg(context, "logged in", 2);
       } else {
         showMsg(context, "invalid credientials", 2);
       }
     } catch (e) {
+      print(e);
       showMsg(context, "server error", 2);
     }
   }
@@ -159,28 +153,33 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: () async {
                     // Push CreateAccount and await returned result (username/newAccount)
-                    final result = await Navigator.pushReplacementNamed(
+                    final result = await Navigator.pushNamed(
                       context,
                       AppRoutes.createAccount,
                     );
                     if (result is Map && result['username'] != null) {
                       // If the create account screen returned a message, show it briefly
                       if (result['message'] != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result['message'].toString())),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result['message'].toString()),
+                            ),
+                          );
+                        }
                         // allow a short moment for the SnackBar to appear before navigating
                         await Future.delayed(const Duration(milliseconds: 300));
                       }
-
-                      Navigator.pushReplacementNamed(
-                        context,
-                        AppRoutes.home,
-                        arguments: {
-                          'username': result['username'],
-                          'newAccount': result['newAccount'] ?? true,
-                        },
-                      );
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.home,
+                          arguments: {
+                            'username': result['username'],
+                            'newAccount': result['newAccount'] ?? true,
+                          },
+                        );
+                      }
                     }
                   },
                   child: const Text("Create Account"),

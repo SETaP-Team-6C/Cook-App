@@ -1,7 +1,6 @@
-from flask import blueprints
+from flask import blueprints, current_app
 from flask import request
 from flask import abort
-
 
 from main.database import Database
 from main.paths import PROJECT_MAIN
@@ -30,14 +29,11 @@ def create_account():
     user_password = request.form['user_password']
     user_email = request.form['user_email']
 
-
-
-    db = Database()
-    with db.get_connection() as con:
+    with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "account/sql/create_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname,user_email,user_password))
+            cur.execute(sql, (user_fname, user_lname, user_email, user_password))
 
         user_id = cur.lastrowid
 

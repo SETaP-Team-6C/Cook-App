@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:frontend/features/add_recipe/services/recipe_service.dart';
 
 class Ingredient {
   final TextEditingController name = TextEditingController();
@@ -143,31 +142,6 @@ class _AddRecipeState extends State<AddRecipe> {
     );
   }
 
-  Future<void> _sendRecipe(name, ingredients, steps, time, difficulty) async {
-    try {
-      final response = await http.post(
-        Uri.parse("http://localhost:5000/add-recipe"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "recipe-title": name,
-          "recipe-ingredients": ingredients,
-          "recipe-steps": steps,
-          "recipe-time": time,
-          "recipe-difficulty": difficulty,
-        }),
-      );
-      print("got in func");
-
-      if (response.statusCode == 200) {
-        print("hit backend ${response.body}");
-      } else {
-        print("fail ${response.statusCode}");
-      }
-    } catch (e) {
-      print("error here =>: $e");
-    }
-  }
-
   String _durationToISO(int hours, int minutes) {
     String result = "PT";
     if (hours > 0) {
@@ -194,8 +168,8 @@ class _AddRecipeState extends State<AddRecipe> {
       final ingredients = _ingredients.map((ingredient) {
         return {
           "ingredient-name": ingredient.name.text.trim(),
-          "ingredient-amount": int.parse(ingredient.amount.text.trim()),
-          "ingredient-calories": int.parse(ingredient.calories.text.trim()),
+          "ingredient-amount": int.tryParse(ingredient.amount.text.trim()),
+          "ingredient-calories": int.tryParse(ingredient.calories.text.trim()),
           "ingredient-unit": ingredient.amountUnits,
         };
       }).toList();
@@ -218,7 +192,7 @@ class _AddRecipeState extends State<AddRecipe> {
           var subStep = subEntry.value;
 
           steps.add({
-            "step-index": "${double.parse("${stepIndex + 1}.${subIndex + 1}")}",
+            "step-index": "${stepIndex + 1}.${subIndex + 1}",
             "step-description": subStep.subStep.text.trim(),
             "step-duration": _durationToISO(
               int.tryParse(subStep.subHours.text.trim()) ?? 0,
@@ -230,15 +204,26 @@ class _AddRecipeState extends State<AddRecipe> {
 
       final time = _durationToISO(hour, minutes);
 
-      await _sendRecipe(name, ingredients, steps, time, difficulty);
-
-      print("Name: $name");
-      print("Ingredients: $ingredients");
-      print("Steps: $steps");
-      print("${time}");
-      print("${difficulty}");
-      print("/n");
-      print("${steps}");
+      try {
+        bool success = await RecipeService.addRecipe(
+          name,
+          ingredients,
+          steps,
+          time,
+          difficulty!,
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("recipe saved")));
+        if (success) {
+          Navigator.of(context).maybePop();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("recipe failed to save")));
+      }
     }
   }
 

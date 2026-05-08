@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/features/authen/services/account_services.dart';
 import 'dart:convert';
 
 class CreateAccount extends StatefulWidget {
@@ -42,19 +42,15 @@ class _CreateAccountState extends State<CreateAccount> {
     setState(() => _loading = true);
 
     try {
-      final uri = Uri.parse('http://localhost:5000/create-account');
-      final resp = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'user_fname': first,
-          'user_lname': last,
-          'user_email': email,
-          'user_password': password,
-        },
+      final resp = await CreateService.createAccount(
+        first,
+        last,
+        email,
+        password,
       );
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );
@@ -63,9 +59,10 @@ class _CreateAccountState extends State<CreateAccount> {
       } else {
         String msg = 'Failed to create account';
         try {
-          final body = jsonDecode(resp.body);
+          final body = jsonDecode(resp.response);
           if (body is Map && body['message'] != null) msg = body['message'];
         } catch (_) {}
+        if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(msg)));
@@ -142,8 +139,9 @@ class _CreateAccountState extends State<CreateAccount> {
                 obscureText: true,
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Confirm password';
-                  if (v != _passwordController.text)
+                  if (v != _passwordController.text) {
                     return 'Passwords do not match';
+                  }
                   return null;
                 },
               ),

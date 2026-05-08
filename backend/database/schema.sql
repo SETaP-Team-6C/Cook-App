@@ -55,10 +55,11 @@ CREATE TABLE recipe_step (
     FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id)
 );
 
+
 CREATE TABLE recipe_step_completion (
     recipe_step_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    FOREIGN KEY (recipe_step_id) REFERENCES recipe_step (recipe_id),
+    FOREIGN KEY (recipe_step_id) REFERENCES recipe_step (recipe_step_id), --changed this to step
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     PRIMARY KEY (recipe_step_id, user_id)
 );
