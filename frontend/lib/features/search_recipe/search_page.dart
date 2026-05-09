@@ -83,26 +83,75 @@ class _SearchPageState extends State<SearchPage> {
         final ingredientNames = ingredients
             .map((i) => i["recipe_ingredient_name"])
             .join(", ");
-        return ListTile(
-          leading: const Icon(Icons.food_bank),
-          title: Text(recipe["recipe_title"] ?? "no title"),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Ingredients: $ingredientNames"),
-              Text("Time: ${recipe["recipe_time"]}"),
-              Text("Difficulty: ${recipe["recipe_difficulty"]}"),
-            ],
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(8),
+            leading: _buildRecipeImage(recipe["recipe_id"]),
+            title: Text(recipe["recipe_title"] ?? "no title"),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("ingredients: $ingredientNames"),
+                Text("Time: ${recipe["recipe_time"]}"),
+                Text("Difficulty: ${recipe["recipe_difficulty"]}"),
+              ],
+            ),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.viewRecipe,
+                arguments: {"recipeId": recipe["recipe_id"]},
+              );
+            },
           ),
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              AppRoutes.viewRecipe,
-              arguments: {"recipeId": recipe["recipe_id"]},
-            );
-          },
         );
       },
+    );
+  }
+
+  Widget _buildRecipeImage(int? recipeId) {
+    if (recipeId == null) {
+      return _buildPlaceholder();
+    }
+    return ClipRRect(
+      borderRadius: BorderRadiusGeometry.circular(8),
+      child: Image.network(
+        "http://localhost:5000/recipe-image/$recipeId",
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, LoadingProgress) {
+          if (LoadingProgress == null) return child;
+          return SizedBox(
+            width: 60,
+            height: 60,
+            child: Center(
+              child: CircularProgressIndicator(
+                value: LoadingProgress.expectedTotalBytes != null
+                    ? LoadingProgress.cumulativeBytesLoaded /
+                          LoadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholder();
+        },
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadiusGeometry.circular(8),
+      ),
+      child: const Icon(Icons.food_bank, color: Colors.grey, size: 30),
     );
   }
 }

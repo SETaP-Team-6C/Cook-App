@@ -289,7 +289,7 @@ class _AddRecipeState extends State<AddRecipe> {
           steps,
           time,
           difficulty!,
-          mainImage: _recipeMainImage?.path,
+          _recipeMainImage?.path,
         );
         if (!mounted) return;
         ScaffoldMessenger.of(
