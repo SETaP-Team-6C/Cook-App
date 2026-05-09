@@ -159,29 +159,29 @@ def get_recipe_image(recipe_id):
         cur = con.cursor()
         with open(PROJECT_MAIN / "recipe/sql/get_main_image.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (recipe_id),)
+            cur.execute(sql, (recipe_id,))
             result = cur.fetchone()
 
-            if result is None or result["recipe-main-image"] is None:
+            if result is None or result["recipe_main_image"] is None:
                 abort(404, "image not found")
 
-            response = Response(result["recipe-main-image"], mimetype="image/jpeg")
+            response = Response(result["recipe_main_image"], mimetype="image/jpeg")
             response.headers["Cache-Control"] = "public, max-age=31536000" #cache for a whole year
-            response
+            return response
 
 # get step image 
-@recipe_bp.route("/recipe-image/<int:step_id>")
+@recipe_bp.route("/step-image/<int:step_id>")
 def get_step_image(step_id):
     with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "recipe/sql/get_step_image.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (step_id),)
+            cur.execute(sql, (step_id,))
             result = cur.fetchone()
 
-            if result is None or result["recipe-step-image"] is None:
+            if result is None or result["recipe_step_image"] is None:
                 abort(404, "image not found")
 
-            response = Response(result["recipe-step-image"], mimetype="image/jpeg")
+            response = Response(result["recipe_step_image"], mimetype="image/jpeg")
             response.headers["Cache-Control"] = "public, max-age=31536000" #cache for a whole year
-            response
+            return response
