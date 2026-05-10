@@ -1,216 +1,517 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frontend &mdash; Cook-App  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/js/theme.js"></script>
+    <title>Frontend &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Login Page" href="frontend/login.html" />
-    <link rel="prev" title="Database" href="backend/database.html" /> 
-</head>
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+  
+  
 
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
           
+
+          <div class="body" role="main">
+            
+  <section id="frontend">
+<h1>Frontend<a class="headerlink" href="#frontend" title="Link to this heading">¶</a></h1>
+<p>This document describes the Flutter frontend included in the repository (located in <cite>frontend/lib</cite>). It lists the top-level pages (screens), their routes, what each page does, and the services the UI calls on the backend. For each service the expected request and response shapes are noted where they can be inferred from the code.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Overview</p></li>
+<li><p>App routes</p></li>
+<li><dl class="simple">
+<dt>Pages (screens)</dt><dd><ul>
+<li><p>Login</p></li>
+<li><p>Create account</p></li>
+<li><p>Home (recipes list)</p></li>
+<li><p>Profile / Account</p></li>
+<li><p>Add recipe</p></li>
+<li><p>Search recipes</p></li>
+<li><p>View recipe (step-by-step)</p></li>
+<li><p>Cooking techniques</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Services and API contract</p></li>
+<li><p>Notes and next steps</p></li>
+</ul>
+</section>
+<section id="assets">
+<h2>Assets<a class="headerlink" href="#assets" title="Link to this heading">¶</a></h2>
+<p>Included images (placeholders) are available in <cite>docs/_static</cite>:</p>
+<ul class="simple">
+<li><p><cite>frontend-architecture.svg</cite> — simple architecture diagram showing the Flutter UI, service wrappers, session store and backend endpoints.</p></li>
+<li><p><cite>screenshot-login.svg</cite> — placeholder image representing the login screen.</p></li>
+<li><p><cite>screenshot-home.svg</cite> — placeholder image representing the home/recipes list.</p></li>
+<li><p><cite>screenshot-view.svg</cite> — placeholder image representing the step-by-step recipe view.</p></li>
+</ul>
+<p>You can replace these placeholder SVGs with real screenshots (PNG/JPEG) using the same filenames, or edit the RST references below to point to custom files.</p>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The frontend is a Flutter application. The entrypoint is <cite>frontend/lib/main.dart</cite>. The app uses named routes defined in <cite>frontend/lib/core/routes.dart</cite>. Shared small utilities and types live under <cite>frontend/lib/core</cite> (for example <cite>session.dart</cite> and <cite>api_response.dart</cite>).</p>
+</section>
+<section id="app-routes">
+<h2>App routes<a class="headerlink" href="#app-routes" title="Link to this heading">¶</a></h2>
+<p>Defined routes (see <cite>AppRoutes</cite> in <cite>core/routes.dart</cite>):</p>
+<ul class="simple">
+<li><p><cite>/login</cite> -&gt; <cite>LoginPage</cite> (initial route)</p></li>
+<li><p><cite>/home</cite> -&gt; <cite>HomePage</cite> (accepts arguments: <cite>username</cite>, <cite>newAccount</cite>)</p></li>
+<li><p><cite>/profile</cite> -&gt; <cite>AccountPage</cite> (accepts arguments: <cite>username</cite>, <cite>newAccount</cite>)</p></li>
+<li><p><cite>/addRecipe</cite> -&gt; <cite>AddRecipe</cite></p></li>
+<li><p><cite>/createAccount</cite> -&gt; <cite>CreateAccount</cite></p></li>
+<li><p><cite>/techniques</cite> -&gt; <cite>CookingTechniquesPage</cite></p></li>
+<li><p><cite>/search</cite> -&gt; <cite>SearchPage</cite></p></li>
+<li><p><cite>/view-recipe</cite> -&gt; <cite>RecipePage</cite> (expects argument: <cite>recipeId</cite>)</p></li>
+</ul>
+</section>
+<section id="pages-screens">
+<h2>Pages (screens)<a class="headerlink" href="#pages-screens" title="Link to this heading">¶</a></h2>
+<p>Each page section below summarizes the UI responsibilities, inputs/outputs, navigation, and noteworthy implementation details.</p>
+<section id="login">
+<h3>Login<a class="headerlink" href="#login" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/authen/login_page.dart</cite></p></li>
+<li><p>Route: <cite>/login</cite> (initial route)</p></li>
+<li><p>Purpose: Allow existing users to authenticate with first name, last name and password, or navigate to create a new account.</p></li>
+<li><p>UI: three text fields (first name, last name, password), Login button, Create Account button. Validates non-empty fields.</p></li>
+<li><p>Behavior: on successful login the app saves <cite>Session.userId</cite> (from backend response JSON at <cite>user.user_id</cite>) and navigates to <cite>/home</cite> passing <cite>username</cite> and <cite>newAccount</cite> flags. On failure shows a SnackBar message.</p></li>
+<li><p>Backend call: uses <cite>LoginService.authenticate</cite> which POSTs form-encoded to <cite>http://localhost:5000/authenticate</cite>.</p></li>
+</ul>
+</section>
+<section id="create-account">
+<h3>Create account<a class="headerlink" href="#create-account" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/authen/create_account.dart</cite></p></li>
+<li><p>Route: <cite>/createAccount</cite></p></li>
+<li><p>Purpose: Register a new user with first/last name, email and password.</p></li>
+<li><p>UI: form fields for first name, last name, email, password, confirm password. Basic validation (length, email contains <cite>&#64;</cite>, password match).</p></li>
+<li><p>Behavior: calls <cite>CreateService.createAccount</cite> to POST form-encoded to <cite>http://localhost:5000/create-account</cite>. On success shows a confirmation SnackBar and returns (pops) to the caller. If called from the Login screen, the login screen will pick up results and navigate to <cite>/home</cite>.</p></li>
+</ul>
+</section>
+<section id="home-recipes-list">
+<h3>Home (recipes list)<a class="headerlink" href="#home-recipes-list" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/recipe/home_page.dart</cite></p></li>
+<li><p>Route: <cite>/home</cite> (expects map args: <cite>username</cite>, <cite>newAccount</cite>)</p></li>
+<li><p>Purpose: Main landing page listing available recipes and quick actions (search, add recipe, techniques).</p></li>
+<li><p>UI: AppBar showing welcome message with username; quick action buttons; list of recipe cards. Each recipe card shows title, difficulty and image (fetched from <cite>http://localhost:5000/recipe-image/&lt;id&gt;</cite>). Pull-to-refresh loads recipes.</p></li>
+<li><p>Behavior: On tap of a recipe card navigates to <cite>/view-recipe</cite> with <cite>recipeId</cite>. On profile icon tap navigates to <cite>/profile</cite> with username/newAccount arguments.</p></li>
+<li><p>Backend call: fetches <cite>GET http://localhost:5000/get-recipes</cite> and expects JSON with top-level key <cite>recipes</cite>.</p></li>
+</ul>
+</section>
+<section id="profile-account">
+<h3>Profile / Account<a class="headerlink" href="#profile-account" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/profile/profile_page.dart</cite></p></li>
+<li><p>Route: <cite>/profile</cite> (expects map args: <cite>username</cite>, <cite>newAccount</cite>)</p></li>
+<li><p>Purpose: Show and modify account details (dietary preferences, notes) and quick metrics for recipe completion. Also provides sign-out.</p></li>
+<li><p>UI: Decorative header with initials, filter chips for dietary options, text area for notes, a set of recipe completion cards and progress. Save and Sign out buttons.</p></li>
+<li><p>Behavior: local UI only in current implementation (no backend calls); sign out navigates back to <cite>/login</cite> and clears navigation stack.</p></li>
+</ul>
+</section>
+<section id="add-recipe">
+<h3>Add recipe<a class="headerlink" href="#add-recipe" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/add_recipe/add_recipe.dart</cite></p></li>
+<li><p>Route: <cite>/addRecipe</cite></p></li>
+<li><p>Purpose: Form for creating a recipe with title, duration, difficulty, ingredients, steps, and images.</p></li>
+<li><p>UI: recipe title field, main image picker, duration (hours/minutes), difficulty dropdown (easy/medium/hard), repeatable ingredient rows (name, amount, unit, calories), repeatable step sections (description, image, duration) and nested sub-steps. Buttons to add ingredient, add step and add sub-step.</p></li>
+<li><p>Behavior: Constructs data payloads for ingredients and steps. Converts durations to ISO-like PT string (e.g., PT1H30M). Uses <cite>RecipeService.addRecipe</cite> which uploads a multipart POST request to <cite>http://localhost:5000/add-recipe</cite> with fields and files.</p></li>
+<li><p>Notes: Images are picked with <cite>image_picker</cite>, then attached as multipart files. Step images are named using their step index in the multipart request (backend must mirror that naming scheme).</p></li>
+</ul>
+</section>
+<section id="search-recipes">
+<h3>Search recipes<a class="headerlink" href="#search-recipes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/search_recipe/search_page.dart</cite></p></li>
+<li><p>Route: <cite>/search</cite></p></li>
+<li><p>Purpose: Search recipes by text query and show results as a list.</p></li>
+<li><p>UI: Search text field that triggers a search on change, list of results with recipe image, title and quick info (ingredients, time, difficulty).</p></li>
+<li><p>Behavior: Calls <cite>SearchService.searchRecipe</cite> to GET <cite>http://localhost:5000/search-recipe?q=&lt;query&gt;</cite>. On tap navigates to <cite>/view-recipe</cite> with <cite>recipeId</cite>.</p></li>
+</ul>
+</section>
+<section id="view-recipe-step-by-step">
+<h3>View recipe (step-by-step)<a class="headerlink" href="#view-recipe-step-by-step" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/view_recipe/view_recipe.dart</cite></p></li>
+<li><p>Route: <cite>/view-recipe</cite> (expects arg <cite>recipeId</cite>)</p></li>
+<li><p>Purpose: Fetch full recipe details and present step-by-step instructions, allow marking steps complete/uncomplete and show progress.</p></li>
+<li><p>UI: AppBar with recipe title and time, linear progress indicator, step content (including image and duration), Complete Step button and optional Go Back (undo last completed step).</p></li>
+<li><p>Behavior: On init the page calls <cite>ViewService.viewRecipe(recipeId)</cite> to GET <cite>http://localhost:5000/view-recipe/&lt;recipeId&gt;?user_id=&lt;Session.userId&gt;</cite> and expects a JSON response containing <cite>recipe-title</cite>, <cite>recipe-time</cite>, <cite>recipe-difficulty</cite> and <cite>recipe-steps</cite> (list). Each step in the list is mapped to an <cite>id</cite>, <cite>text</cite>, <cite>duration</cite> and <cite>completed</cite> flag. When a step is completed the app posts to <cite>POST http://localhost:5000/complete-step</cite> with JSON body {recipe_step_id, user_id}. To undo, it posts to <cite>POST http://localhost:5000/uncomplete-step</cite> with the same body.</p></li>
+</ul>
+</section>
+<section id="cooking-techniques">
+<h3>Cooking techniques<a class="headerlink" href="#cooking-techniques" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>File: <cite>frontend/lib/features/techniques/cooking_techniques_page.dart</cite></p></li>
+<li><p>Route: <cite>/techniques</cite></p></li>
+<li><p>Purpose: Static, local reference guide for cooking techniques (Saute, Braise, Roast, Poach). No backend communication.</p></li>
+<li><p>UI: List of technique cards with title, description, meta rows and quick steps.</p></li>
+</ul>
+</section>
+</section>
+<section id="services-and-api-contract">
+<h2>Services and API contract<a class="headerlink" href="#services-and-api-contract" title="Link to this heading">¶</a></h2>
+<p>These classes in <cite>frontend/lib/…/services</cite> are thin wrappers over HTTP calls to the backend. Where possible the expected request and responses are noted below. All services return an <cite>ApiResponse</cite> (see <cite>frontend/lib/core/api_response.dart</cite>) which contains <cite>statusCode</cite> and the raw <cite>response</cite> string.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Authentication</dt><dd><ul>
+<li><dl class="simple">
+<dt>LoginService.authenticate(fname, lname, password)</dt><dd><ul>
+<li><p>HTTP: POST <a class="reference external" href="http://localhost:5000/authenticate">http://localhost:5000/authenticate</a></p></li>
+<li><p>Content-Type: application/x-www-form-urlencoded</p></li>
+<li><p>Body fields: user_fname, user_lname, user_password</p></li>
+<li><p>Expected: 200 + JSON response containing at least {“user”: {“user_id”: &lt;int&gt;}}</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>CreateService.createAccount(fname, lname, email, password)</dt><dd><ul>
+<li><p>HTTP: POST <a class="reference external" href="http://localhost:5000/create-account">http://localhost:5000/create-account</a></p></li>
+<li><p>Content-Type: application/x-www-form-urlencoded</p></li>
+<li><p>Body fields: user_fname, user_lname, user_email, user_password</p></li>
+<li><p>Expected: 200 or 201 on success; response body may contain message</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Recipes / Home</dt><dd><ul>
+<li><dl class="simple">
+<dt>GET <a class="reference external" href="http://localhost:5000/get-recipes">http://localhost:5000/get-recipes</a></dt><dd><ul>
+<li><p>Expected JSON: {“recipes”: [ { recipe fields… }, … ] }</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Add recipe</dt><dd><ul>
+<li><dl class="simple">
+<dt>RecipeService.addRecipe(name, ingredients, steps, time, difficulty, mainImage)</dt><dd><ul>
+<li><p>HTTP: POST multipart/form-data <a class="reference external" href="http://localhost:5000/add-recipe">http://localhost:5000/add-recipe</a></p></li>
+<li><p>Fields: recipe-title, recipe-ingredients (JSON encoded list), recipe-steps (JSON encoded list), recipe-time (string, e.g. PT1H30M), recipe-difficulty</p></li>
+<li><p>Files: recipe-main-image (optional); step-image-&lt;index&gt; for any step images where the code uses <cite>step[‘step-index’]</cite> string as label (backend must expect keys named like step-image-1, step-image-1.1, …).</p></li>
+<li><p>Expected: 200 or 201 on success</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Search</dt><dd><ul>
+<li><dl class="simple">
+<dt>SearchService.searchRecipe(name)</dt><dd><ul>
+<li><p>HTTP: GET <a class="reference external" href="http://localhost:5000/search-recipe">http://localhost:5000/search-recipe</a>?q=&lt;name&gt;</p></li>
+<li><p>Expected JSON: {“recipes”: [ … ] }</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>View and step control</dt><dd><ul>
+<li><dl class="simple">
+<dt>ViewService.viewRecipe(recipeId)</dt><dd><ul>
+<li><p>HTTP: GET <a class="reference external" href="http://localhost:5000/view-recipe">http://localhost:5000/view-recipe</a>/&lt;recipeId&gt;?user_id=&lt;Session.userId&gt;</p></li>
+<li><p>Expected JSON fields used by UI: recipe-title, recipe-time, recipe-difficulty, recipe-steps (list). Each step is expected to have recipe-step-id, step-description, step-duration, step-completion</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ViewService.completeStep(recipeStepId)</dt><dd><ul>
+<li><p>HTTP: POST <a class="reference external" href="http://localhost:5000/complete-step">http://localhost:5000/complete-step</a></p></li>
+<li><p>Content-Type: application/Json</p></li>
+<li><p>Body: {“recipe_step_id”: &lt;int&gt;, “user_id”: &lt;int&gt;}</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ViewService.unCompleteStep(recipeStepId)</dt><dd><ul>
+<li><p>HTTP: POST <a class="reference external" href="http://localhost:5000/uncomplete-step">http://localhost:5000/uncomplete-step</a></p></li>
+<li><p>Content-Type: application/Json</p></li>
+<li><p>Body: {“recipe_step_id”: &lt;int&gt;, “user_id”: &lt;int&gt;}</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="notes-and-next-steps">
+<h2>Notes and next steps<a class="headerlink" href="#notes-and-next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Backend host: all service calls currently use <cite>http://localhost:5000</cite>. If you run backend elsewhere, update service URIs accordingly.</p></li>
+<li><p>Error handling: services return ApiResponse with raw response text. Pages parse JSON (via jsonDecode) and assume backends return expected structures. Consider adding stronger error handling and typed models.</p></li>
+<li><p>Session: <cite>frontend/lib/core/session.dart</cite> exposes <cite>Session.userId</cite> (nullable int) and is used by <cite>ViewService</cite> and view pages. Consider expanding Session to include auth tokens in the future.</p></li>
+<li><dl class="simple">
+<dt>Improvements you might consider:</dt><dd><ul>
+<li><p>Add shared typed models (Dart classes) for Recipe, Step, Ingredient and use <cite>fromJson</cite>/<cite>toJson</cite> for safer parsing.</p></li>
+<li><p>Centralize API host and environment configuration (so URLs aren’t hardcoded in multiple services).</p></li>
+<li><p>Add tests for service classes and simple widget tests for pages.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>This documentation was generated by reading the frontend source files under <cite>frontend/lib</cite> and summarizing their responsibilities and service calls.</p>
+</section>
+<section id="architecture-diagram-and-screenshots">
+<h2>Architecture diagram and screenshots<a class="headerlink" href="#architecture-diagram-and-screenshots" title="Link to this heading">¶</a></h2>
+<img alt="Frontend architecture diagram" class="align-center" src="_images/frontend-architecture.svg" />
+<p>Example screenshots (placeholders):</p>
+</section>
+<section id="detailed-page-api-examples">
+<h2>Detailed page / API examples<a class="headerlink" href="#detailed-page-api-examples" title="Link to this heading">¶</a></h2>
+<p>Below are more explicit field lists and example payloads the frontend assembles when calling the backend. These are derived from the code and should make it easier to implement backend endpoints that match the client expectations.</p>
+<section id="login-authenticate">
+<h3>Login (authenticate)<a class="headerlink" href="#login-authenticate" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Endpoint: POST /authenticate</p></li>
+<li><p>Content-Type: application/x-www-form-urlencoded</p></li>
+<li><p>Form fields (client sends):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>user_fname</cite> (string) — first name</p></li>
+<li><p><cite>user_lname</cite> (string) — last name</p></li>
+<li><p><cite>user_password</cite> (string) — password</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Example (form-encoded body):</p>
+<blockquote>
+<div><p>user_fname=Alice&amp;user_lname=Smith&amp;user_password=secret</p>
+</div></blockquote>
+</li>
+<li><p>Expected successful response (example JSON):</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>“user”: {</dt><dd><p>“user_id”: 42,
+“user_fname”: “Alice”,
+“user_lname”: “Smith”</p>
+</dd>
+</dl>
+<p>},
+“message”: “authenticated”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="id1">
+<h3>Create account<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Endpoint: POST /create-account</p></li>
+<li><p>Form fields: <cite>user_fname</cite>, <cite>user_lname</cite>, <cite>user_email</cite>, <cite>user_password</cite></p></li>
+<li><p>Example success response: status 201 or 200 with JSON containing <cite>message</cite>.</p></li>
+</ul>
+</section>
+<section id="add-recipe-multipart-upload">
+<h3>Add recipe (multipart upload)<a class="headerlink" href="#add-recipe-multipart-upload" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Endpoint: POST /add-recipe</p></li>
+<li><p>Request type: multipart/form-data</p></li>
+<li><p>Fields the frontend adds:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>recipe-title</cite> (string)</p></li>
+<li><p><cite>recipe-ingredients</cite> (string — JSON encoded list of ingredient objects)</p></li>
+<li><p><cite>recipe-steps</cite> (string — JSON encoded list of step objects)</p></li>
+<li><p><cite>recipe-time</cite> (string, ISO-like, e.g. PT1H30M)</p></li>
+<li><p><cite>recipe-difficulty</cite> (string: one of <cite>easy</cite>, <cite>medium</cite>, <cite>hard</cite>)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Files the frontend may attach:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>recipe-main-image</cite> — the main recipe image file (optional)</p></li>
+<li><p><cite>step-image-&lt;step-index&gt;</cite> — files for each step image. The client uses the step index (and sub-step index) in the step object <cite>step-index</cite> value when naming the multipart field.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Example ingredient object (client-side list element):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“ingredient-name”: “Tomato”,
+“ingredient-amount”: 200,
+“ingredient-unit”: “g”,
+“ingredient-calories”: 30</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+<li><p>Example step object:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“step-index”: “1”,
+“step-description”: “Chop tomatoes”,
+“step-duration”: “PT0H10M”,
+“step-image”: “C:/…/temp/step1.jpg”  # client-side path only; server receives it as multipart</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="view-recipe-detailed">
+<h3>View recipe (detailed)<a class="headerlink" href="#view-recipe-detailed" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Endpoint: GET /view-recipe/&lt;recipeId&gt;?user_id=&lt;userId&gt;</p></li>
+<li><p>Expected JSON response structure (fields used by the UI):</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“recipe-title”: “Tomato Pasta”,
+“recipe-time”: “PT0H30M”,
+“recipe-difficulty”: “easy”,
+“recipe-steps”: [</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“recipe-step-id”: 1,
+“step-description”: “Boil water”,
+“step-duration”: “PT0H10M”,
+“step-completion”: false</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="step-completion">
+<h2>Step completion<a class="headerlink" href="#step-completion" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>To mark a step complete the frontend posts to <cite>/complete-step</cite> with JSON:</p>
+<blockquote>
+<div><p>{“recipe_step_id”: &lt;int&gt;, “user_id”: &lt;int&gt;}</p>
+</div></blockquote>
+</li>
+<li><p>To undo: POST to <cite>/uncomplete-step</cite> with same structure.</p></li>
+</ul>
+</section>
+<section id="replacing-placeholders-with-real-screenshots">
+<h2>Replacing placeholders with real screenshots<a class="headerlink" href="#replacing-placeholders-with-real-screenshots" title="Link to this heading">¶</a></h2>
+<p>To replace the demo SVG screenshot placeholders with real images:</p>
+<ol class="arabic simple">
+<li><p>Create PNG or JPG screenshots of the app (use a device or emulator).</p></li>
+<li><p>Save them in <cite>docs/_static</cite> and name them <cite>screenshot-login.png</cite>, <cite>screenshot-home.png</cite>, etc. (or edit the RST to point to your filenames).</p></li>
+<li><p>Rebuild Sphinx: from <cite>docs</cite> run <cite>sphinx-build -b html . _build/html</cite> (see previous instructions). The new images will be included automatically.</p></li>
+</ol>
+<p>If you’d like, I can replace the placeholder SVGs with sample PNG screenshots if you upload them here or point me to the files you’d like included.</p>
+</section>
+</section>
+
+
+          </div>
           
-          <a href="index.html" class="icon icon-home">
-            Cook-App
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#backend">Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#frontend">Frontend</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="backend.html">Backend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#main-entry">Main entry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#modules">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend/account.html">Account blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/account.html#endpoints">Endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/authentication.html">Authentication blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/authentication.html#endpoints">Endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/recipe.html">Recipe blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/recipe.html#overview">Overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/recipe.html#image-endpoints">Image endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/search_recipe.html">Search blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/search_recipe.html#get-search-recipe-q-query">GET /search-recipe?q=&lt;query&gt;</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/view_recipe.html">View recipe blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#get-view-recipe-recipe-id-user-id-id">GET /view-recipe/&lt;recipe_id&gt;?user_id=&lt;id&gt;</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#post-complete-step">POST /complete-step</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#post-uncomplete-step">POST /uncomplete-step</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/database.html">Database</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frontend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#screens">Screens</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="frontend/login.html">Login Page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/login.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/create_account.html">Create account</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/create_account.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/home.html">Home (recipes) page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/home.html#service-usage">Service usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/search.html">Search page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/search.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/view_recipe.html">View recipe</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/view_recipe.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/add_recipe.html">Add recipe</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/add_recipe.html#service">Service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="frontend/add_recipe.html#notes">Notes</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/profile.html">Profile page</a></li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/techniques.html">Cooking techniques</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">main</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/main.html">main package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/main.account.html">main.account package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.authentication.html">main.authentication package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.index.html">main.index package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.recipe.html">main.recipe package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.search_recipe.html">main.search_recipe package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.view_recipe.html">main.view_recipe package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#submodules">Submodules</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/main.app.html">main.app module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.database.html">main.database module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.paths.html">main.paths module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#module-main">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+
+
+
+
+
+
+
 
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Cook-App</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Frontend</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/frontend.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="frontend">
-<h1>Frontend<a class="headerlink" href="#frontend" title="Link to this heading"></a></h1>
-<p>The frontend is a Flutter application in <cite>frontend/</cite>.</p>
-<p>See <cite>frontend/README.md</cite> for how to run the Flutter app and build for different platforms.</p>
-<section id="screens">
-<h2>Screens<a class="headerlink" href="#screens" title="Link to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="frontend/login.html">Login Page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/create_account.html">Create account</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/home.html">Home (recipes) page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/search.html">Search page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/view_recipe.html">View recipe</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/add_recipe.html">Add recipe</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/profile.html">Profile page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="frontend/techniques.html">Cooking techniques</a></li>
-</ul>
-</div>
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="backend/database.html" class="btn btn-neutral float-left" title="Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="frontend/login.html" class="btn btn-neutral float-right" title="Login Page" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/frontend.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2026, SETaP-Team-6C.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

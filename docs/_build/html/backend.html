@@ -1,216 +1,305 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backend &mdash; Cook-App  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/js/theme.js"></script>
+    <title>Backend &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Account blueprint" href="backend/account.html" />
-    <link rel="prev" title="Installation" href="installation.html" /> 
-</head>
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+  
+  
 
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
           
+
+          <div class="body" role="main">
+            
+  <section id="backend">
+<h1>Backend<a class="headerlink" href="#backend" title="Link to this heading">¶</a></h1>
+<p>This document describes the Python/Flask backend found under <cite>backend/main</cite>. It lists the registered blueprints, the HTTP endpoints exposed by each, the SQL files they use, and example request/response shapes.</p>
+<section id="project-layout-backend-main">
+<h2>Project layout (backend/main)<a class="headerlink" href="#project-layout-backend-main" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><cite>app.py</cite> — application factory that registers blueprints and initialises the <cite>Database</cite> helper.</p></li>
+<li><p><cite>database.py</cite> — simple SQLite helper that creates/opens the database and initialises schema and test data.</p></li>
+<li><p><cite>paths.py</cite> — helpers for resolving repository paths.</p></li>
+<li><dl class="simple">
+<dt>Blueprints (each module has a <cite>routes.py</cite> and SQL files under <cite>sql/</cite>):</dt><dd><ul>
+<li><p><cite>index</cite> — simple health/hello endpoint</p></li>
+<li><p><cite>authentication</cite> — login/auth endpoints and SQL at <cite>authentication/sql/get_user.sql</cite></p></li>
+<li><p><cite>account</cite> — account creation and SQL at <cite>account/sql/create_user.sql</cite></p></li>
+<li><p><cite>recipe</cite> — recipe listing, upload, and image serving; (<cite>recipe/sql/</cite> has <cite>get_recipes.sql</cite>, <cite>add_recipe.sql</cite>, <cite>add_ingredient.sql</cite>, <cite>add_step.sql</cite>, <cite>get_main_image.sql</cite>, <cite>get_step_image.sql</cite>)</p></li>
+<li><p><cite>view_recipe</cite> — endpoints for fetching recipe details and marking steps complete/uncomplete; SQL files in <cite>view_recipe/sql/</cite></p></li>
+<li><p><cite>search_recipe</cite> — recipe search endpoint and SQL at <cite>search_recipe/sql/search_recipe.sql</cite> and <cite>recipe_ingredients.sql</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="registered-blueprints-application-startup">
+<h2>Registered blueprints (application startup)<a class="headerlink" href="#registered-blueprints-application-startup" title="Link to this heading">¶</a></h2>
+<p><cite>create_app()</cite> (in <cite>app.py</cite>) registers these blueprints:</p>
+<ul class="simple">
+<li><p><cite>recipe_bp</cite> (from <cite>main.recipe.routes</cite>) — recipe CRUD and images</p></li>
+<li><p><cite>authentication_bp</cite> (from <cite>main.authentication.routes</cite>) — <cite>/authenticate</cite></p></li>
+<li><p><cite>index_bp</cite> (from <cite>main.index.routes</cite>) — <cite>/</cite></p></li>
+<li><p><cite>account_bp</cite> (from <cite>main.account.routes</cite>) — <cite>/create-account</cite></p></li>
+<li><p><cite>search_bp</cite> (from <cite>main.search_recipe.routes</cite>) — <cite>/search-recipe</cite></p></li>
+<li><p><cite>view_recipe_bp</cite> (from <cite>main.view_recipe.routes</cite>) — <cite>/view-recipe/&lt;id&gt;</cite>, <cite>/complete-step</cite>, <cite>/uncomplete-step</cite></p></li>
+</ul>
+</section>
+<section id="endpoints-behavior-and-sql">
+<h2>Endpoints, behavior and SQL<a class="headerlink" href="#endpoints-behavior-and-sql" title="Link to this heading">¶</a></h2>
+<section id="index">
+<h3>Index<a class="headerlink" href="#index" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>GET <cite>/</cite> — returns a simple JSON hello message. Implemented in <cite>index/routes.py</cite>.</p></li>
+</ul>
+</section>
+<section id="authentication">
+<h3>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>POST <cite>/authenticate</cite> — authenticate user by first+last name and password.</dt><dd><ul>
+<li><p>Request: form-encoded fields <cite>user_fname</cite>, <cite>user_lname</cite>, <cite>user_password</cite>.</p></li>
+<li><p>SQL: <cite>authentication/sql/get_user.sql</cite> which selects <cite>user_id, user_password</cite> from <cite>user</cite> by <cite>user_fname</cite> and <cite>user_lname</cite> (case-insensitive like).</p></li>
+<li><p>Behavior: returns 401 if no user found or password mismatch; otherwise sets Flask session <cite>user_id</cite> and returns <cite>{“success”: true, “user”: { … }}</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="account">
+<h3>Account<a class="headerlink" href="#account" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>POST <cite>/create-account</cite> — create a new user.</dt><dd><ul>
+<li><p>Request: form-encoded <cite>user_fname</cite>, <cite>user_lname</cite>, <cite>user_email</cite>, <cite>user_password</cite>.</p></li>
+<li><p>SQL: <cite>account/sql/create_user.sql</cite> — inserts into <cite>user</cite> table and returns the inserted <cite>user_id</cite>.</p></li>
+<li><p>Response: JSON <cite>{“user_id”: &lt;int&gt;}</cite> with HTTP 201 on success.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="recipes-listing-upload-images">
+<h3>Recipes (listing, upload, images)<a class="headerlink" href="#recipes-listing-upload-images" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>GET <cite>/get-recipes</cite> — returns a JSON list of recipes.</dt><dd><ul>
+<li><p>SQL: <cite>recipe/sql/get_recipes.sql</cite> selects <cite>recipe_id, recipe_title</cite>.</p></li>
+<li><p>Response: <cite>{“recipes”: [ {“recipe_id”: …, “recipe_title”: …}, … ] }</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>POST <cite>/add-recipe</cite> — create a new recipe (multipart/form-data upload).</dt><dd><ul>
+<li><dl class="simple">
+<dt>Request fields (form):</dt><dd><ul>
+<li><p><cite>recipe-title</cite> (string)</p></li>
+<li><p><cite>recipe-time</cite> (string, e.g. PT1H30M)</p></li>
+<li><p><cite>recipe-difficulty</cite> (string: ‘easy’|’medium’|’hard’)</p></li>
+<li><p><cite>recipe-ingredients</cite> (string — JSON encoded list of ingredient objects)</p></li>
+<li><p><cite>recipe-steps</cite> (string — JSON encoded list of step objects)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Files (multipart):</dt><dd><ul>
+<li><p>Optional <cite>recipe-main-image</cite> — main image binary</p></li>
+<li><p>Any <cite>step-image-&lt;index&gt;</cite> keys for step images</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Validation: server validates required fields and types (ingredient amounts/calories must be integers; steps must contain <cite>step-description</cite>, <cite>step-duration</cite>, <cite>step-index</cite>).</p></li>
+<li><p>SQL: inserts into <cite>recipe</cite> (uses <cite>recipe/sql/add_recipe.sql</cite>), then loops to insert ingredients (<cite>add_ingredient.sql</cite>) and steps (<cite>add_step.sql</cite>), storing image blobs as needed. Commits transaction and returns <cite>{“recipe-id”: &lt;int&gt;}</cite> with HTTP 201.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>GET <cite>/recipe-image/&lt;int:recipe_id&gt;</cite> — serves recipe main image.</dt><dd><ul>
+<li><p>SQL: <cite>recipe/sql/get_main_image.sql</cite> selects <cite>recipe_main_image</cite> blob; returns binary response with <cite>Content-Type: image/jpeg</cite> and cache headers.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>GET <cite>/step-image/&lt;int:step_id&gt;</cite> — serves a step image (binary) using <cite>recipe/sql/get_step_image.sql</cite>.</p></li>
+</ul>
+</section>
+<section id="view-recipe-and-step-completion">
+<h3>View recipe and step completion<a class="headerlink" href="#view-recipe-and-step-completion" title="Link to this heading">¶</a></h3>
+<ul>
+<li><dl>
+<dt>GET <cite>/view-recipe/&lt;int:recipe_id&gt;?user_id=&lt;id&gt;</cite> — returns full recipe details in JSON.</dt><dd><ul>
+<li><p>SQL: <cite>view_recipe/sql/get_recipe.sql</cite> returns recipe metadata (id, title, difficulty, time).</p></li>
+<li><p>SQL: <cite>view_recipe/sql/get_recipe_ingredients.sql</cite> returns list of ingredients.</p></li>
+<li><p>SQL: <cite>view_recipe/sql/get_recipe_steps.sql</cite> returns steps; this SQL includes a CASE expression to compute <cite>step-completion</cite> by checking <cite>recipe_step_completion</cite> for the provided <cite>user_id</cite> (query uses two parameters: recipe_id and user_id).</p></li>
+<li><p>Response shape example:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“recipe-id”: 123,
+“recipe-title”: “Tomato Pasta”,
+“recipe-difficulty”: “easy”,
+“recipe-time”: “PT0H30M”,
+“recipe-ingredients”: [ {“ingredient-name”: “Tomato”, “ingredient-amount”: 200, …}, … ],
+“recipe-steps”: [ {“recipe-step-id”: 1, “step-description”: “Boil water”, “step-duration”: “PT0H10M”, “step-index”: “1”, “step-completion”: 0}, … ]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>POST <cite>/complete-step</cite> — mark a step complete for a user.</dt><dd><ul class="simple">
+<li><p>Request: JSON { <cite>recipe_step_id</cite>: &lt;int&gt;, <cite>user_id</cite>: &lt;int&gt; }.</p></li>
+<li><p>SQL: <cite>view_recipe/sql/complete_step.sql</cite> inserts into <cite>recipe_step_completion</cite> using <cite>INSERT OR IGNORE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>POST <cite>/uncomplete-step</cite> — undo completion.</dt><dd><ul class="simple">
+<li><p>Request: same JSON shape; SQL <cite>view_recipe/sql/uncomplete_step.sql</cite> deletes the row from <cite>recipe_step_completion</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="search">
+<h3>Search<a class="headerlink" href="#search" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>GET <cite>/search-recipe?q=&lt;query&gt;</cite> — search recipes by title.</dt><dd><ul>
+<li><p>SQL: <cite>search_recipe/sql/search_recipe.sql</cite> selects recipe rows WHERE <cite>recipe_title LIKE ?</cite>.</p></li>
+<li><p>For each matched recipe the handler also fetches ingredients via <cite>recipe_ingredients.sql</cite> and returns <cite>{“recipes”: [ { recipe fields, “ingredients”: […] }, … ] }</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+<section id="database-and-schema">
+<h2>Database and schema<a class="headerlink" href="#database-and-schema" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The <cite>Database</cite> helper in <cite>database.py</cite> initialises <cite>database.db</cite> (or <cite>test_database.db</cite> when <cite>TESTING=True</cite>) by reading SQL from <cite>../database/schema.sql</cite> and <cite>../database/test_data.sql</cite> on first run.</p></li>
+<li><p>SQL used by endpoints are stored per-module under <cite>module/sql/*.sql</cite> and read at runtime.</p></li>
+</ul>
+</section>
+<section id="running-and-testing-the-backend">
+<h2>Running and testing the backend<a class="headerlink" href="#running-and-testing-the-backend" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>To run the Flask app locally (development), set FLASK_APP to <cite>main.app:create_app</cite> and run <cite>flask run</cite> from the <cite>backend</cite> folder. The app will create <cite>database.db</cite> if it does not exist.</p></li>
+<li><p>Example (PowerShell):</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`powershell</span>
+<span class="pre">Set-Location</span> <span class="pre">&quot;C:\Users\shiji\Desktop\setap_project\Cook-App\backend\main&quot;</span>
+<span class="pre">$env:FLASK_APP</span> <span class="pre">=</span> <span class="pre">'main.app:create_app'</span>
+<span class="pre">flask</span> <span class="pre">run</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+</li>
+<li><p>Use the <cite>Database.delete_test_database()</cite> helper in test runs to remove <cite>test_database.db</cite> between runs.</p></li>
+</ul>
+</section>
+<section id="security-and-notes">
+<h2>Security and notes<a class="headerlink" href="#security-and-notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The backend uses plain-text password comparison against the <cite>user_password</cite> field. For production, switch to hashed passwords and secure sessions.</p></li>
+<li><p>Uploaded images are stored as blobs in the SQLite database. For larger scale, consider storing images in object storage and saving references in the DB.</p></li>
+</ul>
+<p>This overview was generated by reading the Python modules and SQL files under <cite>backend/main</cite> to extract routes, SQL usage and request/response expectations.</p>
+</section>
+</section>
+
+
+          </div>
           
-          <a href="index.html" class="icon icon-home">
-            Cook-App
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#backend">Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#frontend">Frontend</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Backend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#main-entry">Main entry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend/account.html">Account blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/account.html#endpoints">Endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/authentication.html">Authentication blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/authentication.html#endpoints">Endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/recipe.html">Recipe blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/recipe.html#overview">Overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/recipe.html#image-endpoints">Image endpoints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/search_recipe.html">Search blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/search_recipe.html#get-search-recipe-q-query">GET /search-recipe?q=&lt;query&gt;</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/view_recipe.html">View recipe blueprint</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#get-view-recipe-recipe-id-user-id-id">GET /view-recipe/&lt;recipe_id&gt;?user_id=&lt;id&gt;</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#post-complete-step">POST /complete-step</a></li>
-<li class="toctree-l4"><a class="reference internal" href="backend/view_recipe.html#post-uncomplete-step">POST /uncomplete-step</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="backend/database.html">Database</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="frontend.html">Frontend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#screens">Screens</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="frontend/login.html">Login Page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/login.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/create_account.html">Create account</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/create_account.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/home.html">Home (recipes) page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/home.html#service-usage">Service usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/search.html">Search page</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/search.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/view_recipe.html">View recipe</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/view_recipe.html#service">Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="frontend/add_recipe.html">Add recipe</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="frontend/add_recipe.html#service">Service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="frontend/add_recipe.html#notes">Notes</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">main</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/main.html">main package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/main.account.html">main.account package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.authentication.html">main.authentication package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.index.html">main.index package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.recipe.html">main.recipe package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.search_recipe.html">main.search_recipe package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.view_recipe.html">main.view_recipe package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#submodules">Submodules</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/main.app.html">main.app module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.database.html">main.database module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/main.paths.html">main.paths module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/main.html#module-main">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+
+
+
+
+
+
+
 
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Cook-App</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Backend</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/backend.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="backend">
-<h1>Backend<a class="headerlink" href="#backend" title="Link to this heading"></a></h1>
-<p>The backend is a Flask application in <cite>backend/main</cite>.</p>
-<section id="main-entry">
-<h2>Main entry<a class="headerlink" href="#main-entry" title="Link to this heading"></a></h2>
-<p>The application factory is defined in <a class="reference internal" href="api_backend.html#module-main.app" title="main.app"><code class="xref py py-mod docutils literal notranslate"><span class="pre">main.app</span></code></a> (function <code class="docutils literal notranslate"><span class="pre">create_app</span></code>).</p>
-</section>
-<section id="modules">
-<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h2>
-<p>The following blueprint-level guides document endpoints, parameters and example responses:</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="backend/account.html">Account blueprint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend/authentication.html">Authentication blueprint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend/recipe.html">Recipe blueprint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend/search_recipe.html">Search blueprint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend/view_recipe.html">View recipe blueprint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend/database.html">Database</a></li>
-</ul>
-</div>
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="backend/account.html" class="btn btn-neutral float-right" title="Account blueprint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/backend.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2026, SETaP-Team-6C.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>
