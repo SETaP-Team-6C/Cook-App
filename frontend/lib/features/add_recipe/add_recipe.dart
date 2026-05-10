@@ -44,6 +44,32 @@ class _AddRecipeState extends State<AddRecipe> {
   final List<StepItem> _steps = [];
 
   String? _difficultySelector;
+  final List<String> _dietaryOptions = [
+    'Vegan',
+    'Vegetarian',
+    'Gluten-Free',
+    'Dairy-Free',
+    'Nut-Free',
+    'Halal',
+    'Others',
+  ];
+
+  String? _selectedDietary;
+  final TextEditingController _otherDietaryController = TextEditingController();
+
+  // Allergy options
+  final List<String> _allergyOptions = [
+    'Peanuts',
+    'Milk',
+    'Eggs',
+    'Wheat',
+    'Soy',
+    'Fish',
+    'Others',
+  ];
+
+  String? _selectedAllergy;
+  final TextEditingController _otherAllergyController = TextEditingController();
 
   @override
   void initState() {
@@ -61,6 +87,8 @@ class _AddRecipeState extends State<AddRecipe> {
     _recipeNameController.dispose();
     _hoursController.dispose();
     _minutesController.dispose();
+    _otherDietaryController.dispose();
+    _otherAllergyController.dispose();
 
     for (var cont in _ingredients) {
       cont.name.dispose();
@@ -204,13 +232,44 @@ class _AddRecipeState extends State<AddRecipe> {
 
       final time = _durationToISO(hour, minutes);
 
+      print("Name: $name");
+      print("Ingredients: $ingredients");
+      print("Steps: $steps");
+      print("${time}");
+      print("${difficulty}");
+      print("/n");
+      print("${steps}");
+
       try {
+        // build dietary/allergy payloads (include 'Others' text if provided)
+        final List<String> dietaryPayload = [];
+        if (_selectedDietary != null) {
+          if (_selectedDietary == 'Others') {
+            final other = _otherDietaryController.text.trim();
+            if (other.isNotEmpty) dietaryPayload.add(other);
+          } else {
+            dietaryPayload.add(_selectedDietary!);
+          }
+        }
+
+        final List<String> allergyPayload = [];
+        if (_selectedAllergy != null) {
+          if (_selectedAllergy == 'Others') {
+            final other = _otherAllergyController.text.trim();
+            if (other.isNotEmpty) allergyPayload.add(other);
+          } else {
+            allergyPayload.add(_selectedAllergy!);
+          }
+        }
+
         bool success = await RecipeService.addRecipe(
           name,
           ingredients,
           steps,
           time,
           difficulty!,
+          dietaryPayload,
+          allergyPayload,
         );
         if (!mounted) return;
         ScaffoldMessenger.of(
@@ -284,6 +343,83 @@ class _AddRecipeState extends State<AddRecipe> {
                   return null;
                 },
               ),
+
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedDietary,
+                decoration: const InputDecoration(
+                  labelText: 'Dietary requirement',
+                  border: OutlineInputBorder(),
+                ),
+                items: _dietaryOptions
+                    .map(
+                      (opt) => DropdownMenuItem(value: opt, child: Text(opt)),
+                    )
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedDietary = val),
+                validator: (val) {
+                  return null;
+                },
+              ),
+
+              //dietary textbox
+              if (_selectedDietary == 'Others') ...[
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _otherDietaryController,
+                  decoration: const InputDecoration(
+                    labelText: 'Please specify dietary requirement',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (_selectedDietary == 'Others' &&
+                        (value == null || value.trim().isEmpty)) {
+                      return 'Please specify dietary requirement';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+
+              //Allergy dropdown
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedAllergy,
+                decoration: const InputDecoration(
+                  labelText: 'Allergy requirement',
+                  border: OutlineInputBorder(),
+                ),
+                items: _allergyOptions
+                    .map(
+                      (opt) => DropdownMenuItem(value: opt, child: Text(opt)),
+                    )
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedAllergy = val),
+                validator: (val) {
+                  return null;
+                },
+              ),
+
+              //Allergy textbox
+              if (_selectedAllergy == 'Others') ...[
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _otherAllergyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Please specify allergy',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (_selectedAllergy == 'Others' &&
+                        (value == null || value.trim().isEmpty)) {
+                      return 'Please specify allergy';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+
+              const SizedBox(height: 20),
 
               /// Ingredients
               const Text(

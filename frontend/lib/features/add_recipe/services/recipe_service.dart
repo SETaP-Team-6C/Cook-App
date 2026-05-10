@@ -8,6 +8,8 @@ class RecipeService {
     List steps,
     String time,
     String difficulty,
+    List<String> dietary,
+    List<String> allergies,
   ) async {
     final response = await http.post(
       Uri.parse("http://localhost:5000/add-recipe"),
@@ -18,6 +20,8 @@ class RecipeService {
         "recipe-steps": steps,
         "recipe-time": time,
         "recipe-difficulty": difficulty,
+        "recipe-dietary": dietary,
+        "recipe-allergies": allergies,
       }),
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
