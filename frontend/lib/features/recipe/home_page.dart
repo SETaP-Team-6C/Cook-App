@@ -97,6 +97,18 @@ class _MyHomePageState extends State<HomePage> {
                               },
                             ),
                           ),
+                          Expanded(
+                            child: _buildQuickAction(
+                              icon: Icons.add_circle,
+                              label: "add recipe",
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.addRecipe,
+                                );
+                              },
+                            ),
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: _buildQuickAction(
