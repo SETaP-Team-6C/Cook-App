@@ -1,0 +1,22 @@
+Login Page
+==========
+
+Screen: `/login`
+
+`LoginPage` collects first name, last name and password and calls the backend `/authenticate` endpoint.
+
+Service
+-------
+
+`frontend/features/authen/services/account_services.dart::LoginService.authenticate`
+
+Request
+~~~~~~~
+- POST http://localhost:5000/authenticate
+- Content-Type: application/x-www-form-urlencoded
+- Fields: user_fname, user_lname, user_password
+
+Response
+~~~~~~~~
+- 200 with JSON {"success": true, "user": {...}} on success.
+- 401 on invalid credentials.

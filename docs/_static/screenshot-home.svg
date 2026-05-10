@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#f8fafc"/>
+  <rect x="40" y="30" width="560" height="300" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="70" y="70" font-family="Arial" font-size="18" fill="#0f172a">Home — Recipes</text>
+  <rect x="70" y="95" width="200" height="44" rx="8" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="86" y="123" font-family="Arial" font-size="13" fill="#94a3b8">Search</text>
+  <g>
+    <rect x="70" y="155" width="500" height="72" rx="8" fill="#fff" stroke="#e2e8f0"/>
+    <rect x="84" y="169" width="100" height="56" fill="#e6eef9"/>
+    <text x="200" y="200" font-family="Arial" font-size="15" fill="#0f172a">Recipe title — difficulty: easy</text>
+  </g>
+</svg>

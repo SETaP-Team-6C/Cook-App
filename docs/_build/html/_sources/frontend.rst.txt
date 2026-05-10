@@ -1,0 +1,22 @@
+Frontend
+========
+
+The frontend is a Flutter application in `frontend/`.
+
+See `frontend/README.md` for how to run the Flutter app and build for different platforms.
+
+Screens
+-------
+
+.. toctree::
+   :maxdepth: 1
+
+   frontend/login
+   frontend/create_account
+   frontend/home
+   frontend/search
+   frontend/view_recipe
+   frontend/add_recipe
+   frontend/profile
+   frontend/techniques
+

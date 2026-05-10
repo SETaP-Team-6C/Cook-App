@@ -1,0 +1,47 @@
+Authentication blueprint
+========================
+
+Endpoints
+---------
+
+POST /authenticate
+^^^^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Authenticate a user using first name, last name and password. On success the server sets `session["user_id"]` and returns user data (without password).
+
+Form fields (application/x-www-form-urlencoded)
+
+- user_fname (string) - required
+- user_lname (string) - required
+- user_password (string) - required
+
+Success Response
+~~~~~~~~~~~~~~~~
+
+Status: 200
+
+JSON body:
+
+.. code-block:: json
+
+   {
+     "success": true,
+     "user": {
+       "user_id": 1,
+       "user_fname": "Jane",
+       "user_lname": "Doe",
+       "user_email": "jane@example.com"
+     }
+   }
+
+Failure
+~~~~~~~
+
+- 401 if user not found or password mismatch (returns {"success": false}).
+
+Client mapping
+~~~~~~~~~~~~~~
+
+The frontend `LoginService.authenticate` posts to /authenticate with form fields and expects above JSON. See `frontend/features/authen/services/account_services.dart`.

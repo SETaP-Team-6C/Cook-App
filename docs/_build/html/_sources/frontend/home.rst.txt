@@ -1,0 +1,14 @@
+Home (recipes) page
+====================
+
+Screen: `/home`
+
+Shows a list of recipes pulled from `/get-recipes`. Each recipe card links to the view recipe screen. Also provides quick actions to search, add a recipe and view techniques.
+
+Service usage
+-------------
+
+- GET http://localhost:5000/get-recipes
+- Images: GET http://localhost:5000/recipe-image/<id>
+
+Frontend file: `frontend/features/recipe/home_page.dart`

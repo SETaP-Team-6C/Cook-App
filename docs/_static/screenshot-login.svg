@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#f8fafc"/>
+  <rect x="60" y="40" width="520" height="280" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="90" y="85" font-family="Arial" font-size="18" fill="#0f172a">Login</text>
+  <rect x="90" y="110" width="460" height="36" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="100" y="135" font-family="Arial" font-size="13" fill="#94a3b8">First name</text>
+  <rect x="90" y="156" width="460" height="36" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="100" y="181" font-family="Arial" font-size="13" fill="#94a3b8">Last name</text>
+  <rect x="90" y="202" width="460" height="36" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="100" y="227" font-family="Arial" font-size="13" fill="#94a3b8">Password</text>
+  <rect x="90" y="250" width="200" height="36" rx="6" fill="#7c3aed"/> 
+  <text x="150" y="276" font-family="Arial" font-size="14" fill="#fff">Login</text>
+</svg>

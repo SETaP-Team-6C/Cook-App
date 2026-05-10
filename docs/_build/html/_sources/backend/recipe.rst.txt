@@ -1,0 +1,82 @@
+Recipe blueprint
+================
+
+Overview
+--------
+
+The `recipes` blueprint provides endpoints to list recipes, add new recipes (with multipart images), and fetch images (main and step images).
+
+GET /get-recipes
+^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Return a JSON list of recipes.
+
+Success Response
+
+.. code-block:: json
+
+   {
+     "recipes": [ { "recipe_id": 1, "recipe_title": "Pasta", ... }, ... ]
+   }
+
+POST /add-recipe
+^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Create a new recipe. This endpoint accepts a multipart/form-data POST with fields and optional files.
+
+Form fields
+
+- recipe-title (string) - required
+- recipe-time (string, ISO8601 duration like PT1H30M) - required
+- recipe-difficulty (string: easy|medium|hard) - required
+- recipe-ingredients (JSON array) - required. Each ingredient object must include:
+  - ingredient-name (string)
+  - ingredient-amount (int)
+  - ingredient-unit (string)
+  - ingredient-calories (int)
+- recipe-steps (JSON array) - required. Each step object must include:
+  - step-index (string) e.g. "1" or "1.1" for sub-steps
+  - step-description (string)
+  - step-duration (string, ISO duration)
+
+Files
+
+- recipe-main-image - optional file (png/jpg/jpeg/webp)
+- step-image-<index> - optional file per step, key name must be `step-image-<step-index>` where `<step-index>` matches the `step-index` value sent in steps JSON.
+
+Success Response
+
+Status: 201
+
+JSON:
+
+.. code-block:: json
+
+   { "recipe-id": 42 }
+
+Errors
+
+- 400 for validation failures (missing fields, invalid JSON, file too large). Max file size = 5MB.
+
+Image endpoints
+---------------
+
+GET /recipe-image/<recipe_id>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns the recipe's main image binary with content-type image/jpeg. 404 if not found.
+
+GET /step-image/<step_id>
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns a step image binary with content-type image/jpeg. 404 if not found.
+
+Client mapping
+~~~~~~~~~~~~~~
+
+- `frontend/features/add_recipe/services/recipe_service.dart` uploads multipart fields and files to `/add-recipe`.
+- `frontend/features/recipe/home_page.dart` and `search_page.dart` request `/get-recipes` and then use `/recipe-image/<id>` to fetch images.

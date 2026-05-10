@@ -1,0 +1,21 @@
+Create account
+==============
+
+Screen: `/createAccount`
+
+`CreateAccount` page collects first name, last name, email and password then posts to `/create-account`.
+
+Service
+-------
+
+`frontend/features/authen/services/account_services.dart::CreateService.createAccount`
+
+Request
+~~~~~~~
+- POST http://localhost:5000/create-account
+- Content-Type: application/x-www-form-urlencoded
+- Fields: user_fname, user_lname, user_email, user_password
+
+Response
+~~~~~~~~
+- 201 with JSON {"user_id": ...} on success.

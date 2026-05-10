@@ -1,0 +1,10 @@
+Usage
+=====
+
+Run the backend locally for development:
+
+.. code-block:: bash
+
+   .venv\Scripts\activate; export FLASK_APP=backend/main/app.py; flask run
+
+Then run the Flutter frontend (from `frontend/`) as usual with `flutter run`.

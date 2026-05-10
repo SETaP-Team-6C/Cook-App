@@ -1,0 +1,20 @@
+Welcome to Cook-App's documentation!
+====================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   installation
+   backend
+   frontend
+   usage
+   api/modules
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

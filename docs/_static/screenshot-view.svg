@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#f8fafc"/>
+  <rect x="40" y="30" width="560" height="300" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="70" y="70" font-family="Arial" font-size="18" fill="#0f172a">Recipe — Step 1 of 4</text>
+  <rect x="70" y="90" width="500" height="160" rx="8" fill="#e9f5ea"/>
+  <text x="86" y="130" font-family="Arial" font-size="15" fill="#0f172a">Step description: Preheat pan, add oil and saute...</text>
+  <rect x="86" y="220" width="160" height="36" rx="6" fill="#7c3aed"/>
+  <text x="120" y="245" font-family="Arial" font-size="14" fill="#fff">Complete step</text>
+</svg>

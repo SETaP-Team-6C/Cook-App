@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe blueprint &mdash; Cook-App  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Cook-App
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#backend">Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#frontend">Frontend</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../backend.html">Backend</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../backend.html#main-entry">Main entry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backend.html#modules">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend.html">Frontend</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../frontend.html#screens">Screens</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/login.html">Login Page</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/login.html#service">Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/create_account.html">Create account</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/create_account.html#service">Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/home.html">Home (recipes) page</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/home.html#service-usage">Service usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/search.html">Search page</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/search.html#service">Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/view_recipe.html">View recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/view_recipe.html#service">Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../frontend/add_recipe.html">Add recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/add_recipe.html#service">Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../frontend/add_recipe.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">main</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/main.html">main package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/main.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.account.html">main.account package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.authentication.html">main.authentication package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.index.html">main.index package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.recipe.html">main.recipe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.search_recipe.html">main.search_recipe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.view_recipe.html">main.view_recipe package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/main.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.app.html">main.app module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.database.html">main.database module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/main.paths.html">main.paths module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/main.html#module-main">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cook-App</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Recipe blueprint</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/backend/recipe.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="recipe-blueprint">
+<h1>Recipe blueprint<a class="headerlink" href="#recipe-blueprint" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <cite>recipes</cite> blueprint provides endpoints to list recipes, add new recipes (with multipart images), and fetch images (main and step images).</p>
+<section id="get-get-recipes">
+<h3>GET /get-recipes<a class="headerlink" href="#get-get-recipes" title="Link to this heading"></a></h3>
+<section id="description">
+<h4>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h4>
+<p>Return a JSON list of recipes.</p>
+<p>Success Response</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;recipes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;recipe_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;recipe_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Pasta&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="post-add-recipe">
+<h3>POST /add-recipe<a class="headerlink" href="#post-add-recipe" title="Link to this heading"></a></h3>
+<section id="id1">
+<h4>Description<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p>Create a new recipe. This endpoint accepts a multipart/form-data POST with fields and optional files.</p>
+<p>Form fields</p>
+<ul class="simple">
+<li><p>recipe-title (string) - required</p></li>
+<li><p>recipe-time (string, ISO8601 duration like PT1H30M) - required</p></li>
+<li><p>recipe-difficulty (string: easy|medium|hard) - required</p></li>
+<li><p>recipe-ingredients (JSON array) - required. Each ingredient object must include:
+- ingredient-name (string)
+- ingredient-amount (int)
+- ingredient-unit (string)
+- ingredient-calories (int)</p></li>
+<li><p>recipe-steps (JSON array) - required. Each step object must include:
+- step-index (string) e.g. “1” or “1.1” for sub-steps
+- step-description (string)
+- step-duration (string, ISO duration)</p></li>
+</ul>
+<p>Files</p>
+<ul class="simple">
+<li><p>recipe-main-image - optional file (png/jpg/jpeg/webp)</p></li>
+<li><p>step-image-&lt;index&gt; - optional file per step, key name must be <cite>step-image-&lt;step-index&gt;</cite> where <cite>&lt;step-index&gt;</cite> matches the <cite>step-index</cite> value sent in steps JSON.</p></li>
+</ul>
+<p>Success Response</p>
+<p>Status: 201</p>
+<p>JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;recipe-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Errors</p>
+<ul class="simple">
+<li><p>400 for validation failures (missing fields, invalid JSON, file too large). Max file size = 5MB.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="image-endpoints">
+<h2>Image endpoints<a class="headerlink" href="#image-endpoints" title="Link to this heading"></a></h2>
+<section id="get-recipe-image-recipe-id">
+<h3>GET /recipe-image/&lt;recipe_id&gt;<a class="headerlink" href="#get-recipe-image-recipe-id" title="Link to this heading"></a></h3>
+<p>Returns the recipe’s main image binary with content-type image/jpeg. 404 if not found.</p>
+</section>
+<section id="get-step-image-step-id">
+<h3>GET /step-image/&lt;step_id&gt;<a class="headerlink" href="#get-step-image-step-id" title="Link to this heading"></a></h3>
+<p>Returns a step image binary with content-type image/jpeg. 404 if not found.</p>
+<section id="client-mapping">
+<h4>Client mapping<a class="headerlink" href="#client-mapping" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><cite>frontend/features/add_recipe/services/recipe_service.dart</cite> uploads multipart fields and files to <cite>/add-recipe</cite>.</p></li>
+<li><p><cite>frontend/features/recipe/home_page.dart</cite> and <cite>search_page.dart</cite> request <cite>/get-recipes</cite> and then use <cite>/recipe-image/&lt;id&gt;</cite> to fetch images.</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SETaP-Team-6C.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+View recipe blueprint
+======================
+
+GET /view-recipe/<recipe_id>?user_id=<id>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Returns a single recipe with ingredients and steps. If `user_id` provided, step completion flags are resolved for that user.
+
+Success Response
+
+JSON example:
+
+.. code-block:: json
+
+   {
+     "recipe_id": 1,
+     "recipe-title": "Pasta",
+     "recipe-time": "PT0H30M",
+     "recipe-difficulty": "easy",
+     "recipe-ingredients": [ { "recipe_ingredient_name": "Flour", ... } ],
+     "recipe-steps": [ { "recipe-step-id": 10, "step-description": "Boil water", "step-completion": false, ... }, ... ]
+   }
+
+POST /complete-step
+^^^^^^^^^^^^^^^^^^^^
+
+Request JSON body:
+
+- recipe_step_id (int) - required
+- user_id (int) - required
+
+Response: {"success": true} on success.
+
+POST /uncomplete-step
+^^^^^^^^^^^^^^^^^^^^^
+
+Same as above but marks the step uncompleted.
+
+Client mapping
+~~~~~~~~~~~~~~
+
+- `frontend/features/view_recipe/services/service_view_recipe.dart` calls these endpoints to fetch recipes and toggle step completion.

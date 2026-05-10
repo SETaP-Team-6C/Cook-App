@@ -1,0 +1,8 @@
+Cooking techniques
+==================
+
+Screen: `/techniques`
+
+A static page that shows cooking techniques and learning resources.
+
+Frontend file: `frontend/features/techniques/cooking_techniques_page.dart`

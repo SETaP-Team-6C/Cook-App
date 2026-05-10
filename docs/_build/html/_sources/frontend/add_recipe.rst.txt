@@ -1,0 +1,16 @@
+Add recipe
+==========
+
+Screen: `/addRecipe`
+
+`AddRecipe` provides a form to create a new recipe and upload images. It sends a multipart/form-data POST to `/add-recipe`.
+
+Service
+-------
+
+- `frontend/features/add_recipe/services/recipe_service.dart::RecipeService.addRecipe`
+
+Notes
+-----
+
+- Steps and ingredients are encoded as JSON and sent as fields. Images are attached as files with names `recipe-main-image` and `step-image-<index>`.

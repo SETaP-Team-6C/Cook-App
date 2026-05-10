@@ -1,0 +1,6 @@
+Database
+========
+
+The backend uses an SQLite database under `backend/main/database.db` (or `test_database.db` when TESTING is set). The `Database` helper in `main.database` handles creation and schema loading from `database/schema.sql` and test data from `database/test_data.sql`.
+
+See `backend/database/schema.sql` for the table definitions.

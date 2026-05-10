@@ -1,0 +1,8 @@
+Profile page
+============
+
+Screen: `/profile`
+
+`AccountPage` (profile) shows user details and provides a logout action that navigates back to the `/login` route.
+
+Frontend file: `frontend/features/profile/profile_page.dart`

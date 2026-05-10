@@ -1,0 +1,15 @@
+Search page
+===========
+
+Screen: `/search`
+
+`SearchPage` searches the backend `/search-recipe?q=...` endpoint and displays results.
+
+Service
+-------
+
+`frontend/features/search_recipe/services/search_recipe_service.dart::SearchService.searchRecipe`
+
+Request
+~~~~~~~
+- GET http://localhost:5000/search-recipe?q=<query>

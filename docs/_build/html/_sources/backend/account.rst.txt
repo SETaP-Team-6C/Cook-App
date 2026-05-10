@@ -1,0 +1,42 @@
+Account blueprint
+=================
+
+Endpoints
+---------
+
+POST /create-account
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Create a new user account.
+
+Form fields (application/x-www-form-urlencoded)
+
+- user_fname (string) - required
+- user_lname (string) - required
+- user_email (string) - required
+- user_password (string) - required
+
+Success Response
+~~~~~~~~~~~~~~~~
+
+Status: 201
+
+JSON body:
+
+.. code-block:: json
+
+   {
+     "user_id": 123
+   }
+
+Errors
+~~~~~~
+
+- 400 if any required form field is missing or invalid.
+
+Client mapping
+~~~~~~~~~~~~~~
+
+The frontend `CreateService.createAccount` posts to /create-account with form encoded fields. See `frontend/features/authen/services/account_services.dart`.

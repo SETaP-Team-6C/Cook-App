@@ -1,0 +1,24 @@
+Search blueprint
+================
+
+GET /search-recipe?q=<query>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+~~~~~~~~~~~
+Search recipes by title or other indexed fields. Query is passed as the `q` parameter on the querystring.
+
+Success Response
+
+.. code-block:: json
+
+   { "recipes": [ { "recipe_id": 1, "recipe_title": "Pancakes", "ingredients": [ ... ] }, ... ] }
+
+Errors
+
+- 400 if `q` is empty.
+
+Client mapping
+~~~~~~~~~~~~~~
+
+- `frontend/features/search_recipe/services/search_recipe_service.dart` calls this endpoint and renders results in `SearchPage`.

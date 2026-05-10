@@ -1,0 +1,24 @@
+Backend
+=======
+
+The backend is a Flask application in `backend/main`.
+
+Main entry
+----------
+
+The application factory is defined in :mod:`main.app` (function ``create_app``).
+
+Modules
+-------
+
+The following blueprint-level guides document endpoints, parameters and example responses:
+
+.. toctree::
+	:maxdepth: 1
+
+	backend/account
+	backend/authentication
+	backend/recipe
+	backend/search_recipe
+	backend/view_recipe
+	backend/database

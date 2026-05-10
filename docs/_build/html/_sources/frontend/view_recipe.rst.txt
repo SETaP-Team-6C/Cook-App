@@ -1,0 +1,13 @@
+View recipe
+===========
+
+Screen: `/view-recipe` (navigated with argument `recipeId`)
+
+`RecipePage` fetches recipe details from `/view-recipe/<recipeId>` and shows steps. It uses `complete-step` and `uncomplete-step` to toggle step completion for current user.
+
+Service
+-------
+
+- `frontend/features/view_recipe/services/service_view_recipe.dart::ViewService.viewRecipe`
+- `frontend/features/view_recipe/services/service_view_recipe.dart::ViewService.completeStep`
+- `frontend/features/view_recipe/services/service_view_recipe.dart::ViewService.unCompleteStep`
