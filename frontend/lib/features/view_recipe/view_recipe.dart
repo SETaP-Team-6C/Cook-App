@@ -41,7 +41,6 @@ class _RecipePageState extends State<RecipePage> {
     }
 
     final data = jsonDecode(response.response);
-    print(data);
 
     recipeTitle = data["recipe-title"] ?? "";
     recipeTime = data["recipe-time"]?.toString();
@@ -122,6 +121,18 @@ class _RecipePageState extends State<RecipePage> {
     }
   }
 
+  Widget _buildStepImage(int stepId) {
+    return Image.network(
+      "http://localhost:5000/step-image/$stepId",
+      height: 200,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, StackTrace) {
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -133,7 +144,7 @@ class _RecipePageState extends State<RecipePage> {
 
     if (currentStepId == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text("test recipe")),
+        appBar: AppBar(title: Text(recipeTitle)),
         body: const Center(child: Text("completed recipe")),
       );
     }
@@ -148,50 +159,77 @@ class _RecipePageState extends State<RecipePage> {
             ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LinearProgressIndicator(value: progress),
-
-            const SizedBox(height: 20),
-
-            Text(
-              "Step ${steps.indexWhere((s) => s["id"] == currentStepId) + 1} of ${steps.length}",
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "step ${steps.indexWhere((s) => s["id"] == currentStepId) + 1}",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    if (recipeDifficulty != null)
+                      Text("Difficulty: $recipeDifficulty"),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                LinearProgressIndicator(value: progress),
+              ],
             ),
+          ),
+          // step
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildStepImage(currentStepId!),
+                  const SizedBox(height: 20),
 
-            if (recipeDifficulty != null) ...[
-              const SizedBox(height: 10),
-              Text("difficulty: $recipeDifficulty"),
-            ],
-
-            const SizedBox(height: 20),
-
-            Text(
-              currentStep["text"],
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20),
+                  Text(
+                    currentStep["text"],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  if (currentStep["duration"] != null) ...[
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.timer, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          currentStep["duration"],
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
             ),
-
-            if (currentStep["duration"] != null) ...[
-              const SizedBox(height: 20),
-              Text("${currentStep["duration"]}"),
-            ],
-
-            const Spacer(),
-
-            ElevatedButton(
-              onPressed: completedStep,
-              child: const Text("complete step"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: completedStep,
+                    child: const Text("complete step"),
+                  ),
+                ),
+                if (completedSteps.isNotEmpty)
+                  TextButton(onPressed: goBack, child: const Text("go back")),
+              ],
             ),
-
-            const SizedBox(height: 20),
-
-            if (completedSteps.isNotEmpty)
-              TextButton(onPressed: goBack, child: const Text("go back")),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

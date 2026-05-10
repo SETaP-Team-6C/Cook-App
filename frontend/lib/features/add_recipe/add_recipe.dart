@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/features/add_recipe/services/recipe_service.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class Ingredient {
   final TextEditingController name = TextEditingController();
@@ -14,6 +16,8 @@ class SubStep {
 
   final TextEditingController subMinutes = TextEditingController();
   final TextEditingController subHours = TextEditingController();
+
+  File? image;
 }
 
 //gonna follow the same format as ingredients and make step into a class
@@ -23,6 +27,8 @@ class StepItem {
 
   final TextEditingController minutes = TextEditingController();
   final TextEditingController hours = TextEditingController();
+
+  File? image;
 }
 
 class AddRecipe extends StatefulWidget {
@@ -44,6 +50,10 @@ class _AddRecipeState extends State<AddRecipe> {
   final List<StepItem> _steps = [];
 
   String? _difficultySelector;
+
+  //main image
+  File? _recipeMainImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -81,6 +91,72 @@ class _AddRecipeState extends State<AddRecipe> {
     }
 
     super.dispose();
+  }
+
+  Future<File?> _pickImage() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1800,
+        maxHeight: 1800,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        return File(pickedFile.path);
+      }
+      return null;
+    } catch (e) {
+      if (!mounted) return null;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error picking image: $e")));
+      return null;
+    }
+  }
+
+  Widget buildImagePicker({
+    required File? image,
+    required VoidCallback onPick,
+    required VoidCallback onRemove,
+    String label = "Add image",
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        if (image != null)
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  image,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  style: IconButton.styleFrom(backgroundColor: Colors.black54),
+                  onPressed: onRemove,
+                ),
+              ),
+            ],
+          )
+        else
+          OutlinedButton.icon(
+            onPressed: onPick,
+            icon: const Icon(Icons.add_photo_alternate),
+            label: Text(label),
+          ),
+        const SizedBox(height: 10),
+      ],
+    );
   }
 
   Widget buildDurationFields(
@@ -186,6 +262,7 @@ class _AddRecipeState extends State<AddRecipe> {
           "step-index": "${stepIndex + 1}",
           "step-description": step.controller.text.trim(),
           "step-duration": _durationToISO(stepHours, stepMinutes),
+          "step-image": step.image?.path,
         });
         for (var subEntry in step.subSteps.asMap().entries) {
           int subIndex = subEntry.key;
@@ -198,6 +275,7 @@ class _AddRecipeState extends State<AddRecipe> {
               int.tryParse(subStep.subHours.text.trim()) ?? 0,
               int.tryParse(subStep.subMinutes.text.trim()) ?? 0,
             ),
+            "step-image": subStep.image?.path,
           });
         }
       }
@@ -211,6 +289,7 @@ class _AddRecipeState extends State<AddRecipe> {
           steps,
           time,
           difficulty!,
+          _recipeMainImage?.path,
         );
         if (!mounted) return;
         ScaffoldMessenger.of(
@@ -254,6 +333,28 @@ class _AddRecipeState extends State<AddRecipe> {
                   }
                   return null;
                 },
+              ),
+
+              const SizedBox(height: 20),
+
+              const Text("main image"),
+
+              buildImagePicker(
+                image: _recipeMainImage,
+                onPick: () async {
+                  final image = await _pickImage();
+                  if (image != null) {
+                    setState(() {
+                      _recipeMainImage = image;
+                    });
+                  }
+                },
+                onRemove: () {
+                  setState(() {
+                    _recipeMainImage = null;
+                  });
+                },
+                label: "Add Main Recipe Image",
               ),
 
               buildDurationFields(_hoursController, _minutesController),
@@ -428,6 +529,23 @@ class _AddRecipeState extends State<AddRecipe> {
                         },
                       ),
                     ),
+                    buildImagePicker(
+                      image: step.image,
+                      onPick: () async {
+                        final image = await _pickImage();
+                        if (image != null) {
+                          setState(() {
+                            step.image = image;
+                          });
+                        }
+                      },
+                      onRemove: () {
+                        setState(() {
+                          step.image = null;
+                        });
+                      },
+                      label: "Add step ${stepIndex + 1} image",
+                    ),
 
                     buildDurationFields(step.hours, step.minutes),
 
@@ -454,6 +572,24 @@ class _AddRecipeState extends State<AddRecipe> {
                                 }
                                 return null;
                               },
+                            ),
+                            buildImagePicker(
+                              image: subStep.image,
+                              onPick: () async {
+                                final image = await _pickImage();
+                                if (image != null) {
+                                  setState(() {
+                                    subStep.image = image;
+                                  });
+                                }
+                              },
+                              onRemove: () {
+                                setState(() {
+                                  subStep.image = null;
+                                });
+                              },
+                              label:
+                                  "Add sub step ${stepIndex + 1}.${subIndex + 1}image",
                             ),
 
                             buildDurationFields(

@@ -23,7 +23,8 @@ CREATE TABLE recipe (
     recipe_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_title TEXT NOT NULL,
     recipe_time TEXT,
-    recipe_difficulty TEXT
+    recipe_difficulty TEXT,
+    recipe_main_image BLOB
 );
 
 CREATE TABLE completed_recipe (
@@ -52,6 +53,7 @@ CREATE TABLE recipe_step (
     recipe_step_index TEXT NOT NULL,
     recipe_step_description TEXT NOT NULL,
     recipe_step_duration TEXT,
+    recipe_step_image BLOB,
     FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id)
 );
 
