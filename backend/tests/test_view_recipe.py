@@ -1,3 +1,6 @@
+import json
+
+
 def test_view_recipe(client):
     body = {
         "user_fname": "test",
@@ -8,7 +11,7 @@ def test_view_recipe(client):
     assert response.status_code == 200
 
     body = {
-        "recipe-ingredients": [
+        "recipe-ingredients": json.dumps([
             {
                 "ingredient-name": "Ingredient 1",
                 "ingredient-amount": 300,
@@ -21,9 +24,9 @@ def test_view_recipe(client):
                 "ingredient-unit": "g",
                 "ingredient-calories": 700
             }
-        ],
+        ]),
         "recipe-title": "Test Recipe",
-        "recipe-steps": [
+        "recipe-steps": json.dumps([
             {
                 "step-description": "Step 1",
                 "step-duration": "PT30M",
@@ -34,11 +37,11 @@ def test_view_recipe(client):
                 "step-duration": "PT45M",
                 "step-index": "2"
             }
-        ],
+        ]),
         "recipe-difficulty": "medium",
         "recipe-time": "PT1H30M"
     }
-    response = client.post('/add-recipe', json=body)
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
     assert response.status_code == 201
     assert response.mimetype == "application/json"
     recipe_id = response.get_json()["recipe-id"]
