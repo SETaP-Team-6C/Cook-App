@@ -35,6 +35,8 @@ def create_account():
             sql = sql_file.read()
             cur.execute(sql, (user_fname, user_lname, user_email, user_password))
 
+            con.commit()
+
         user_id = cur.lastrowid
 
     return {
