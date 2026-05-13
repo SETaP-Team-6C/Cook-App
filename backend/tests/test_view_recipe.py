@@ -2,6 +2,8 @@ import json
 
 from werkzeug.datastructures import FileStorage
 
+from main.paths import PROJECT_ROOT
+
 
 def test_view_recipe(client):
     body = {
@@ -98,8 +100,9 @@ def test_recipe_image(client):
     response = client.post("/authenticate", data=body)
     assert response.status_code == 200
 
+    image_path = PROJECT_ROOT / "tests/assets/test_image.jpg"
     image = FileStorage(
-        stream=open("assets/test_image.jpg", "rb"),
+        stream=open(image_path, "rb"),
         filename="test_image.jpg",
         content_type="image/jpeg"
     )
@@ -142,7 +145,7 @@ def test_recipe_image(client):
     recipe_id = response.get_json()["recipe-id"]
 
     image = FileStorage(
-        stream=open("assets/test_image.jpg", "rb"),
+        stream=open(image_path, "rb"),
         filename="test_image.jpg",
         content_type="image/jpeg"
     )
