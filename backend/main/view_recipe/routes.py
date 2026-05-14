@@ -1,6 +1,7 @@
 from flask import blueprints, current_app
 from flask import request
 from flask import abort
+from flask import session
 
 from main.database import Database
 from main.paths import PROJECT_MAIN
@@ -10,6 +11,9 @@ view_recipe_bp = blueprints.Blueprint('view-recipe', __name__)
 
 @view_recipe_bp.route('/view-recipe/<int:recipe_id>', methods=['GET'])
 def view_recipe(recipe_id):
+    if "user_id" not in session:
+        abort(401, "authentication required")
+
     user_id = request.args.get("user_id")
     with Database(current_app) as con:
         cur = con.cursor()
@@ -17,10 +21,13 @@ def view_recipe(recipe_id):
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe.sql") as sql_file:
             sql = sql_file.read()
             cur.execute(sql, (recipe_id,))
-            data = cur.fetchone()
-            if data is None:
-                return "", 404
-            recipe = dict(data)
+            result = cur.fetchone()
+
+        if result is None:
+            abort(404, "recipe not found")
+
+        recipe = dict(result)
+
 
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe_ingredients.sql") as sql_file:
             sql = sql_file.read()
@@ -50,7 +57,13 @@ def view_recipe(recipe_id):
 
 @view_recipe_bp.route('/complete-step', methods=["POST"])
 def complete_step():
+    if "user_id" not in session:
+        abort(401, "authentication required")
+
     data = request.get_json()
+    if data is None:
+        abort(400, "invalid or missing JSON body")
+
     recipe_step_id = data.get("recipe_step_id")
     user_id = data.get("user_id")
 
@@ -70,7 +83,13 @@ def complete_step():
 
 @view_recipe_bp.route('/uncomplete-step', methods=["POST"])
 def uncomplete_step():
+    if "user_id" not in session:
+        abort(401, "authentication required")
+
     data = request.get_json()
+    if data is None:
+        abort(400, "invalid or missing JSON body")
+
     recipe_step_id = data.get("recipe_step_id")
     user_id = data.get("user_id")
 
