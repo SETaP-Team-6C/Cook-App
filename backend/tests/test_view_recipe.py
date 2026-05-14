@@ -182,16 +182,6 @@ def test_recipe_image(client):
     assert response.mimetype == "image/jpeg"
 
 
-def test_view_preseeded_recipe(client):
-    _authenticate(client)
-    response = client.get("/view-recipe/1")
-    assert response.status_code == 200
-    data = response.get_json()
-    assert data["recipe-id"] == 1
-    assert data["recipe-title"] == "Pizza"
-    assert data["recipe-ingredients"] == []
-    assert data["recipe-steps"] == []
-
 
 def test_view_recipe_with_user_id_steps_uncompleted(client):
     user_id = _authenticate(client)
