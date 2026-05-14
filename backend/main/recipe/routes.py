@@ -40,9 +40,6 @@ def get_recipes():
 
 @recipe_bp.route('/add-recipe', methods=['POST'])
 def add_recipe():
-    if not request.form:
-        abort(400, "no form provided")
-
     #getting fields form data
     try:
         recipe_title = request.form.get("recipe-title")
