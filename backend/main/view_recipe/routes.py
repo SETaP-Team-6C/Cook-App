@@ -17,11 +17,10 @@ def view_recipe(recipe_id):
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe.sql") as sql_file:
             sql = sql_file.read()
             cur.execute(sql, (recipe_id,))
-            recipe = dict(cur.fetchone())
-
-        if len(recipe) == 0:
-            return "",404
-
+            data = cur.fetchone()
+            if data is None:
+                return "", 404
+            recipe = dict(data)
 
         with open(PROJECT_MAIN / "view_recipe/sql/get_recipe_ingredients.sql") as sql_file:
             sql = sql_file.read()
