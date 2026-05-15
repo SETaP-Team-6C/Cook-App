@@ -58,7 +58,7 @@ def test_account_creation_missing_email(client: FlaskClient) -> None:
     response = client.post('/create-account', data=body)
     assert response.status_code == 400
 
-def test_account_creation_form(client: FlaskClient) -> None:
+def test_account_creation_empty_form(client: FlaskClient) -> None:
     body = {}
 
     response = client.post('/create-account', data=body)
