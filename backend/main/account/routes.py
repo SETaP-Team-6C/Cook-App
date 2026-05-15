@@ -12,6 +12,9 @@ account_bp = blueprints.Blueprint('account', __name__)
 def create_account():
     # todo: include dietary preferences
     # Validate form first
+    if not request.form:
+        abort(400)
+
     if "user_fname" not in request.form:
         abort(400)
 
