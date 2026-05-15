@@ -150,3 +150,192 @@ def test_no_title(client):
     }
     response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
     assert response.status_code == 400
+
+
+
+def test_add_recipe_missing_difficulty(client):
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "Test Recipe",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-time": "PT1H30M"
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_missing_time(client):
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "Test Recipe",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-difficulty": "medium"
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_title(client):
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-difficulty": "medium",
+        "recipe-time": "PT1H30M"
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_difficulty(client):
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "Test Recipe",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-difficulty": "",
+        "recipe-time": "PT1H30M"
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_time(client):
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "Test Recipe",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-difficulty": "medium",
+        "recipe-time": ""
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_unauthenticated(client):
+    body = {
+        "recipe-ingredients": json.dumps([
+            {
+                "ingredient-name": "Ingredient 1",
+                "ingredient-amount": 300,
+                "ingredient-unit": "g",
+                "ingredient-calories": 500
+            }
+        ]),
+        "recipe-title": "Test Recipe",
+        "recipe-steps": json.dumps([
+            {
+                "step-description": "Step 1",
+                "step-duration": "PT30M",
+                "step-index": "1"
+            }
+        ]),
+        "recipe-difficulty": "medium",
+        "recipe-time": "PT1H30M"
+    }
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 401
