@@ -87,7 +87,7 @@ def test_account_blank_email(client: FlaskClient) -> None:
     body = {
         "user_fname": "new",
         "user_lname": "user",
-        "user_email": "test@test",
+        "user_email": "",
         "user_password": "123456"
     }
 
@@ -100,7 +100,7 @@ def test_account_blank_password(client: FlaskClient) -> None:
         "user_fname": "new",
         "user_lname": "user",
         "user_email": "test@test",
-        "user_password": "123456"
+        "user_password": ""
     }
 
     response = client.post('/create-account', data=body)

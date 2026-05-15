@@ -15,16 +15,16 @@ def create_account():
     if not request.form:
         abort(400)
 
-    if "user_fname" not in request.form:
+    if not request.form.get("user_fname"):
         abort(400)
 
-    if "user_lname" not in request.form:
+    if not request.form.get("user_lname"):
         abort(400)
 
-    if "user_password" not in request.form:
+    if not request.form.get("user_email"):
         abort(400)
 
-    if "user_email" not in request.form:
+    if not request.form.get("user_password"):
         abort(400)
 
     user_fname = request.form['user_fname']
