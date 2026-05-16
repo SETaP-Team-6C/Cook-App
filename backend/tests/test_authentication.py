@@ -170,3 +170,6 @@ def test_empty_body(client: FlaskClient) -> None:
     assert response.status_code == 400
     with client.session_transaction() as sess:
         assert sess.get("user_id", None) is None
+
+
+
