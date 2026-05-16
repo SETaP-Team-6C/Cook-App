@@ -11,6 +11,8 @@ view_recipe_bp = blueprints.Blueprint('view-recipe', __name__)
 
 @view_recipe_bp.route('/view-recipe/<int:recipe_id>', methods=['GET'])
 def view_recipe(recipe_id):
+    if "user_id" not in session:
+        abort(401)
 
     user_id = request.args.get("user_id")
     with Database(current_app) as con:
@@ -55,6 +57,8 @@ def view_recipe(recipe_id):
 
 @view_recipe_bp.route('/complete-step', methods=["POST"])
 def complete_step():
+    if "user_id" not in session:
+        abort(401)
 
     data = request.get_json()
     if data is None:
@@ -79,6 +83,8 @@ def complete_step():
 
 @view_recipe_bp.route('/uncomplete-step', methods=["POST"])
 def uncomplete_step():
+    if "user_id" not in session:
+        abort(401)
 
     data = request.get_json()
     if data is None:

@@ -1,6 +1,7 @@
 from flask import blueprints, current_app
 from flask import request
 from flask import abort
+from flask import session
 
 
 from main.database import Database
@@ -13,6 +14,8 @@ search_bp = blueprints.Blueprint('search',__name__)
 
 @search_bp.route('/search-recipe',methods=['GET'])
 def search_recipe():
+    if "user_id" not in session:
+        abort(401)
     query = request.args.get('q','').strip()
 
     if not query:

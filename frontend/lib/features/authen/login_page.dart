@@ -33,19 +33,18 @@ class _LoginPageState extends State<LoginPage> {
   // async func returns Future of type void is like in rust needs
   Future<void> _sendUser(userFname, userLname, password, newAccount) async {
     try {
-      final data = await LoginService.authenticate(
+      final data = await AuthService.authenticate(
         userFname,
         userLname,
         password,
       );
-      final json_resp = jsonDecode(data.response);
+      final jsonResp = jsonDecode(data.response);
       // will stop if widgets areant displayed after async
       if (!mounted) return;
 
       if (data.statusCode == 200) {
         String username = "$userFname $userLname";
-        Session.userId = json_resp["user"]["user_id"];
-        print(Session.userId);
+        Session.userId = jsonResp["user"]["user_id"];
 
         Navigator.pushReplacementNamed(
           // uses named routing now instead of direct calling

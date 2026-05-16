@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:frontend/features/authen/services/account_services.dart';
 
 class RecipeService {
   static Future<bool> addRecipe(
@@ -16,6 +17,10 @@ class RecipeService {
         'POST',
         Uri.parse("http://localhost:5000/add-recipe"),
       );
+
+      if (AuthService.sessionCookie != null) {
+        request.headers["Cookie"] = AuthService.sessionCookie!;
+      }
 
       // add fields
       request.fields['recipe-title'] = name;

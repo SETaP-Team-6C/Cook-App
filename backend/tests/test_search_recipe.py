@@ -3,6 +3,13 @@ import json
 
 def test_search_recipe(client):
     body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+    body = {
         "recipe-ingredients": json.dumps([
             {
                 "ingredient-name": "Ingredient 1",

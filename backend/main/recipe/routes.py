@@ -40,6 +40,8 @@ def get_recipes():
 
 @recipe_bp.route('/add-recipe', methods=['POST'])
 def add_recipe():
+    if "user_id" not in session:
+        abort(401)
     #getting fields form data
     try:
         recipe_title = request.form.get("recipe-title")
