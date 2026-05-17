@@ -3,7 +3,7 @@ CREATE TABLE user (
     user_fname TEXT NOT NULL,
     user_lname TEXT NOT NULL,
     user_password TEXT NOT NUll,
-    user_email TEXT NOT Null
+    user_email TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE dietary_requirement (

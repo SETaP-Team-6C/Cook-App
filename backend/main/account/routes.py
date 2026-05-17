@@ -1,3 +1,5 @@
+from sqlite3 import IntegrityError
+
 from flask import blueprints, current_app
 from flask import request
 from flask import abort
@@ -32,12 +34,23 @@ def create_account():
     user_password = request.form['user_password']
     user_email = request.form['user_email']
 
+    if '@' not in user_email:
+        return "", 400
+
+    if len(user_password) <= 3:
+        return "", 400
+
+    if len(user_email) > 320:
+        return "", 400
+
     with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "account/sql/create_user.sql", 'r') as sql_file:
             sql = sql_file.read()
-            cur.execute(sql, (user_fname, user_lname, user_email, user_password))
-            #added fix
+            try:
+                cur.execute(sql, (user_fname, user_lname, user_email, user_password))
+            except IntegrityError:
+                return "", 409
 
             con.commit()
 
