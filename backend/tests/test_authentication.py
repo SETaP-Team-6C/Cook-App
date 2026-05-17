@@ -172,4 +172,48 @@ def test_empty_body(client: FlaskClient) -> None:
         assert sess.get("user_id", None) is None
 
 
+def test_case_sensitive_fname(client):
+    body = {
+        "user_fname": "TEST",
+        "user_lname": "user",
+        "user_password": "123456",
 
+    }
+
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert response.json["success"] is True
+    assert response.json["user"]["user_id"] == 1
+    with client.session_transaction() as sess:
+        assert sess.get("user_id", None) == 1
+
+
+def test_extra_whitespace_inputs(client):
+    body = {
+        "user_fname": " test ",
+        "user_lname": " user ",
+        "user_password": "123456",
+
+    }
+
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 401
+    assert response.json is not None
+    assert response.json["success"] is False
+    with client.session_transaction() as sess:
+        assert sess.get("user_id", None) is None
+
+
+def test_long_fname(client):
+    body = {
+        "user_fname": "f" * 65,
+        "user_lname": "user",
+        "user_password": "123456",
+
+    }
+
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 400
+    with client.session_transaction() as sess:
+        assert sess.get("user_id", None) is None

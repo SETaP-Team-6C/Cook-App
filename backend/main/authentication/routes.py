@@ -26,6 +26,12 @@ def authenticate():
     user_lname = request.form['user_lname']
     user_password = request.form['user_password']
 
+    if len(user_fname) > 64:
+        abort(400)
+
+    if len(user_lname) > 64:
+        abort(400)
+
     with Database(current_app) as con:
         cur = con.cursor()
         with open(PROJECT_MAIN / "authentication/sql/get_user.sql", 'r') as sql_file:
