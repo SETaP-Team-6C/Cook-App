@@ -21,10 +21,15 @@ def authenticate():
     if "user_password" not in request.form:
         abort(400)
 
-    # Use first and last names to get the user ID from the database
-    user_fname = request.form['user_fname']
-    user_lname = request.form['user_lname']
+    # Use first and last names to get the user ID from the database.
+    # Surrounding whitespace is ignored so " test " still matches "test".
+    user_fname = request.form['user_fname'].strip()
+    user_lname = request.form['user_lname'].strip()
     user_password = request.form['user_password']
+
+    # Names are stored in fixed-size columns, reject anything too long
+    if len(user_fname) > 64 or len(user_lname) > 64:
+        abort(400)
 
     with Database(current_app) as con:
         cur = con.cursor()

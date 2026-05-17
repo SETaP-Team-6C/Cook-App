@@ -19,6 +19,18 @@ def allowed_file(filename):
             filename.rsplit(".",1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Magic byte signatures so a renamed non-image file is still rejected
+IMAGE_SIGNATURES = (
+    b"\xff\xd8\xff",       # jpg / jpeg
+    b"\x89PNG\r\n\x1a\n",  # png
+)
+
+def is_image(data):
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":  # webp
+        return True
+    return any(data.startswith(sig) for sig in IMAGE_SIGNATURES)
+
+
 @recipe_bp.route('/get-recipes')
 def get_recipes():
     with Database(current_app) as con:
@@ -41,7 +53,8 @@ def get_recipes():
 @recipe_bp.route('/add-recipe', methods=['POST'])
 def add_recipe():
     if "user_id" not in session:
-        abort(401)
+        abort(401, "authentication required")
+
     #getting fields form data
     try:
         recipe_title = request.form.get("recipe-title")
@@ -98,10 +111,14 @@ def add_recipe():
     main_image_blob = None
     if "recipe-main-image" in request.files:
         file = request.files["recipe-main-image"]
-        if file and file.filename and allowed_file(file.filename):
+        if file and file.filename:
+            if not allowed_file(file.filename):
+                abort(400, "main image must be a png, jpg, jpeg or webp file")
             image_data = file.read()
             if len(image_data) > MAX_FILE_SIZE:
                 abort(400, "image too big max is 5mb")
+            if not is_image(image_data):
+                abort(400, "main image file is not a valid image")
             main_image_blob = image_data
 
     # step images
@@ -110,10 +127,14 @@ def add_recipe():
         if key.startswith("step-image-"):
             step_index = key.replace("step-image-","")
             file = request.files[key]
-            if file and file.filename and allowed_file(file.filename):
+            if file and file.filename:
+                if not allowed_file(file.filename):
+                    abort(400, f"step image {step_index} must be a png, jpg, jpeg or webp file")
                 image_data = file.read()
                 if len(image_data) > MAX_FILE_SIZE:
                     abort(400, f"step image {step_index} file too big 5mb max")
+                if not is_image(image_data):
+                    abort(400, f"step image {step_index} is not a valid image")
                 step_images[step_index] = image_data
         
 
