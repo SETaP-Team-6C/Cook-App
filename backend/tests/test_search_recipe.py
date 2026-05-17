@@ -167,7 +167,7 @@ def test_search_recipe(client):
         ]
     })
 
-def test_uncomplete_step_missing_recipe_step_id(client):
+def test_search_recipe_partial_query_returns_only_matching_results(client):
     # Authenticate
     body = {
         "user_fname": "test",
