@@ -339,3 +339,63 @@ def test_add_recipe_unauthenticated(client):
     }
     response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
     assert response.status_code == 401
+
+def test_add_recipe_missing_time(client):
+    # Authenticate
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+    
+def test_add_recipe_missing_time(client):
+    # Authenticate
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    # Missing recipe time
+    data = {
+        "recipe-ingredients": json.dumps([
+            {"ingredient-name": "Ingredient 1", "ingredient-amount": 100, "ingredient-unit": "g", "ingredient-calories": 50}
+        ]),
+        "recipe-title": "No Time",
+        "recipe-steps": json.dumps([
+            {"step-description": "Do something", "step-duration": "PT5M", "step-index": "1"}
+        ]),
+        "recipe-difficulty": "easy",
+        # "recipe-time": missing
+    }
+    response = client.post('/add-recipe', data=data, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+def test_add_recipe_blank_difficulty(client):
+    # Authenticate
+    body = {
+        "user_fname": "test",
+        "user_lname": "user",
+        "user_password": "123456"
+    }
+    response = client.post("/authenticate", data=body)
+    assert response.status_code == 200
+
+    # Blank difficulty (empty string)
+    data = {
+        "recipe-ingredients": json.dumps([
+            {"ingredient-name": "Ingredient 1", "ingredient-amount": 100, "ingredient-unit": "g", "ingredient-calories": 50}
+        ]),
+        "recipe-title": "Blank Difficulty",
+        "recipe-steps": json.dumps([
+            {"step-description": "Do something", "step-duration": "PT5M", "step-index": "1"}
+        ]),
+        "recipe-difficulty": "",
+        "recipe-time": "PT10M"
+    }
+    response = client.post('/add-recipe', data=data, content_type="multipart/form-data")
+    assert response.status_code == 400
