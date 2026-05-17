@@ -9,8 +9,6 @@ class CreateAccount extends StatefulWidget {
   State<CreateAccount> createState() => _CreateAccountState();
 }
 
-
-
 class _CreateAccountState extends State<CreateAccount> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -42,7 +40,7 @@ class _CreateAccountState extends State<CreateAccount> {
     setState(() => _loading = true);
 
     try {
-      final resp = await CreateService.createAccount(
+      final resp = await AuthService.createAccount(
         first,
         last,
         email,

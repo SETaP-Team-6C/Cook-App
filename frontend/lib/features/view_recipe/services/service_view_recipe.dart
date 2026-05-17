@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:frontend/core/api_response.dart';
 import 'package:frontend/core/session.dart';
+import 'package:frontend/features/authen/services/account_services.dart';
 import 'package:http/http.dart' as http;
 
 class ViewService {
@@ -10,6 +11,10 @@ class ViewService {
       Uri.parse(
         "http://localhost:5000/view-recipe/$recipeId",
       ).replace(queryParameters: {"user_id": Session.userId.toString()}),
+      headers: {
+        if (AuthService.sessionCookie != null)
+          'Cookie': AuthService.sessionCookie!,
+      },
     );
     return ApiResponse(
       statusCode: response.statusCode,
@@ -20,7 +25,11 @@ class ViewService {
   static Future<ApiResponse> completeStep(int recipeStepId) async {
     final response = await http.post(
       Uri.parse("http://localhost:5000/complete-step"),
-      headers: {"Content-Type": "application/Json"},
+      headers: {
+        "Content-Type": "application/Json",
+        if (AuthService.sessionCookie != null)
+          'Cookie': AuthService.sessionCookie!,
+      },
       body: jsonEncode({
         "recipe_step_id": recipeStepId,
         "user_id": Session.userId,
@@ -35,7 +44,11 @@ class ViewService {
   static Future<ApiResponse> unCompleteStep(int recipeStepId) async {
     final response = await http.post(
       Uri.parse("http://localhost:5000/uncomplete-step"),
-      headers: {"Content-Type": "application/Json"},
+      headers: {
+        "Content-Type": "application/Json",
+        if (AuthService.sessionCookie != null)
+          'Cookie': AuthService.sessionCookie!,
+      },
       body: jsonEncode({
         "recipe_step_id": recipeStepId,
         "user_id": Session.userId,

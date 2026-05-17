@@ -87,7 +87,57 @@ def test_no_title(client):
     assert response.status_code == 400
 
 
-def test_unauthenticated(client):
+def test_add_recipe_missing_difficulty(client):
+    _authenticate(client)
+
+    body = _recipe_body()
+    del body["recipe-difficulty"]
+
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_missing_time(client):
+    _authenticate(client)
+
+    body = _recipe_body()
+    del body["recipe-time"]
+
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_title(client):
+    _authenticate(client)
+
+    body = _recipe_body()
+    body["recipe-title"] = ""
+
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_difficulty(client):
+    _authenticate(client)
+
+    body = _recipe_body()
+    body["recipe-difficulty"] = ""
+
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_blank_time(client):
+    _authenticate(client)
+
+    body = _recipe_body()
+    body["recipe-time"] = ""
+
+    response = client.post('/add-recipe', data=body, content_type="multipart/form-data")
+    assert response.status_code == 400
+
+
+def test_add_recipe_unauthenticated(client):
     response = client.post('/add-recipe', data=_recipe_body(), content_type="multipart/form-data")
     assert response.status_code == 401
 

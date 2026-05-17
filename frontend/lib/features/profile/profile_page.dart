@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routes.dart';
+import 'package:frontend/features/authen/services/account_services.dart';
 
 class AccountPage extends StatefulWidget {
   final String username;
@@ -82,6 +83,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _signOut() {
+    AuthService.clearSession();
     Navigator.of(
       context,
     ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
